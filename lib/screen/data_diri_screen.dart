@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -20,7 +21,6 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
   String email = 'tika.afrilia@example.com';
 
   Uint8List? fotoProfil;
-
   bool isLoading = true;
 
   @override
@@ -29,36 +29,51 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
     _loadProfile();
   }
 
-  // =========================
-  // MEMUAT DATA DARI STORAGE
-  // =========================
+  // Memuat data profil dari penyimpanan lokal.
   Future<void> _loadProfile() async {
-    final prefs = await SharedPreferences.getInstance();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final fotoBase64 = prefs.getString('profile_foto');
 
-    final fotoBase64 = prefs.getString('profile_foto');
-
-    if (!mounted) return;
-
-    setState(() {
-      nama = prefs.getString('profile_nama') ?? 'Tika Afrilia';
-      npm = prefs.getString('profile_npm') ?? '2413025078';
-      programStudi = prefs.getString('profile_program_studi') ??
-          'Pendidikan Teknologi Informasi';
-      semester = prefs.getString('profile_semester') ?? 'Semester 5';
-      email = prefs.getString('profile_email') ??
-          'tika.afrilia@example.com';
+      Uint8List? foto;
 
       if (fotoBase64 != null && fotoBase64.isNotEmpty) {
-        fotoProfil = base64Decode(fotoBase64);
+        try {
+          foto = base64Decode(fotoBase64);
+        } catch (_) {
+          foto = null;
+        }
       }
 
-      isLoading = false;
-    });
+      if (!mounted) return;
+
+      setState(() {
+        nama = prefs.getString('profile_nama') ?? 'Tika Afrilia';
+        npm = prefs.getString('profile_npm') ?? '2413025078';
+        programStudi = prefs.getString('profile_program_studi') ??
+            'Pendidikan Teknologi Informasi';
+        semester = prefs.getString('profile_semester') ?? 'Semester 5';
+        email = prefs.getString('profile_email') ??
+            'tika.afrilia@example.com';
+        fotoProfil = foto;
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gagal memuat data diri.'),
+        ),
+      );
+    }
   }
 
-  // =========================
-  // MENYIMPAN DATA KE STORAGE
-  // =========================
+  // Menyimpan data profil.
   Future<void> _saveProfile({
     required String namaBaru,
     required String npmBaru,
@@ -69,23 +84,85 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
   }) async {
     final prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString('profile_nama', namaBaru);
+    final berhasil = await prefs.setString('profile_nama', namaBaru);
+    if (!berhasil) throw Exception('Gagal menyimpan nama.');
+
     await prefs.setString('profile_npm', npmBaru);
-    await prefs.setString(
-      'profile_program_studi',
-      programStudiBaru,
-    );
-    await prefs.setString(
-      'profile_semester',
-      semesterBaru,
-    );
+    await prefs.setString('profile_program_studi', programStudiBaru);
+    await prefs.setString('profile_semester', semesterBaru);
     await prefs.setString('profile_email', emailBaru);
 
+    // Jika foto null, jangan hapus foto lama secara otomatis.
     if (fotoBaru != null) {
-      final fotoBase64 = base64Encode(fotoBaru);
-      await prefs.setString('profile_foto', fotoBase64);
-    } else {
-      await prefs.remove('profile_foto');
+      await prefs.setString(
+        'profile_foto',
+        base64Encode(fotoBaru),
+      );
+    }
+  }
+
+  Future<void> _bukaEditDataDiri() async {
+    final hasil = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditDataDiriScreen(
+          nama: nama,
+          npm: npm,
+          programStudi: programStudi,
+          semester: semester,
+          email: email,
+          fotoProfil: fotoProfil,
+        ),
+      ),
+    );
+
+    if (!mounted || hasil == null) return;
+
+    try {
+      final namaBaru = hasil['nama'] as String;
+      final npmBaru = hasil['npm'] as String;
+      final programStudiBaru = hasil['programStudi'] as String;
+      final semesterBaru = hasil['semester'] as String;
+      final emailBaru = hasil['email'] as String;
+      final fotoBaru = hasil['fotoProfil'] as Uint8List?;
+
+      await _saveProfile(
+        namaBaru: namaBaru,
+        npmBaru: npmBaru,
+        programStudiBaru: programStudiBaru,
+        semesterBaru: semesterBaru,
+        emailBaru: emailBaru,
+        fotoBaru: fotoBaru,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        nama = namaBaru;
+        npm = npmBaru;
+        programStudi = programStudiBaru;
+        semester = semesterBaru;
+        email = emailBaru;
+        fotoProfil = fotoBaru ?? fotoProfil;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Data diri berhasil disimpan.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Data gagal disimpan. Silakan coba kembali.',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -93,9 +170,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -108,15 +183,11 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            // =========================
-            // FOTO PROFIL
-            // =========================
             CircleAvatar(
               radius: 60,
               backgroundColor: const Color(0xFFEAF4FF),
-              backgroundImage: fotoProfil != null
-                  ? MemoryImage(fotoProfil!)
-                  : null,
+              backgroundImage:
+                  fotoProfil != null ? MemoryImage(fotoProfil!) : null,
               child: fotoProfil == null
                   ? const Icon(
                       Icons.person,
@@ -125,56 +196,42 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
                     )
                   : null,
             ),
-
             const SizedBox(height: 16),
-
             Text(
               nama,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 4),
-
             const Text(
               'Mahasiswa',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 15,
-              ),
+              style: TextStyle(color: Colors.grey, fontSize: 15),
             ),
-
             const SizedBox(height: 30),
 
-            // =========================
-            // DATA DIRI
-            // =========================
             _buildInfoCard(
               icon: Icons.person_outline,
               title: 'Nama Lengkap',
               value: nama,
             ),
-
             _buildInfoCard(
               icon: Icons.badge_outlined,
               title: 'NPM',
               value: npm,
             ),
-
             _buildInfoCard(
               icon: Icons.school_outlined,
               title: 'Program Studi',
               value: programStudi,
             ),
-
             _buildInfoCard(
               icon: Icons.menu_book_outlined,
               title: 'Semester',
               value: semester,
             ),
-
             _buildInfoCard(
               icon: Icons.email_outlined,
               title: 'Email',
@@ -183,60 +240,10 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
 
             const SizedBox(height: 20),
 
-            // =========================
-            // TOMBOL EDIT
-            // =========================
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () async {
-                  final hasil = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditDataDiriScreen(
-                        nama: nama,
-                        npm: npm,
-                        programStudi: programStudi,
-                        semester: semester,
-                        email: email,
-                        fotoProfil: fotoProfil,
-                      ),
-                    ),
-                  );
-
-                  if (hasil != null && hasil is Map) {
-                    final namaBaru = hasil['nama'] as String;
-                    final npmBaru = hasil['npm'] as String;
-                    final programStudiBaru =
-                        hasil['programStudi'] as String;
-                    final semesterBaru =
-                        hasil['semester'] as String;
-                    final emailBaru =
-                        hasil['email'] as String;
-                    final fotoBaru =
-                        hasil['fotoProfil'] as Uint8List?;
-
-                    await _saveProfile(
-                      namaBaru: namaBaru,
-                      npmBaru: npmBaru,
-                      programStudiBaru: programStudiBaru,
-                      semesterBaru: semesterBaru,
-                      emailBaru: emailBaru,
-                      fotoBaru: fotoBaru,
-                    );
-
-                    if (!mounted) return;
-
-                    setState(() {
-                      nama = namaBaru;
-                      npm = npmBaru;
-                      programStudi = programStudiBaru;
-                      semester = semesterBaru;
-                      email = emailBaru;
-                      fotoProfil = fotoBaru;
-                    });
-                  }
-                },
+                onPressed: _bukaEditDataDiri,
                 icon: const Icon(Icons.edit),
                 label: const Text('Edit Data Diri'),
               ),
@@ -308,35 +315,26 @@ class EditDataDiriScreen extends StatefulWidget {
       _EditDataDiriScreenState();
 }
 
-class _EditDataDiriScreenState
-    extends State<EditDataDiriScreen> {
-  late TextEditingController namaController;
-  late TextEditingController npmController;
-  late TextEditingController prodiController;
-  late TextEditingController emailController;
+class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
+  late final TextEditingController namaController;
+  late final TextEditingController npmController;
+  late final TextEditingController prodiController;
+  late final TextEditingController emailController;
 
   late String semester;
-
   Uint8List? fotoSementara;
+  bool sedangMemilihFoto = false;
 
   @override
   void initState() {
     super.initState();
 
-    namaController =
-        TextEditingController(text: widget.nama);
-
-    npmController =
-        TextEditingController(text: widget.npm);
-
-    prodiController =
-        TextEditingController(text: widget.programStudi);
-
-    emailController =
-        TextEditingController(text: widget.email);
+    namaController = TextEditingController(text: widget.nama);
+    npmController = TextEditingController(text: widget.npm);
+    prodiController = TextEditingController(text: widget.programStudi);
+    emailController = TextEditingController(text: widget.email);
 
     semester = widget.semester;
-
     fotoSementara = widget.fotoProfil;
   }
 
@@ -346,46 +344,86 @@ class _EditDataDiriScreenState
     npmController.dispose();
     prodiController.dispose();
     emailController.dispose();
-
     super.dispose();
   }
 
-  // =========================
-  // PILIH FOTO DARI LAPTOP
-  // =========================
+  // Memilih foto dari laptop atau perangkat.
   Future<void> _pilihFoto() async {
-    final ImagePicker picker = ImagePicker();
+    if (sedangMemilihFoto) return;
 
-    final XFile? foto = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
+    setState(() {
+      sedangMemilihFoto = true;
+    });
 
-    if (foto == null) {
+    try {
+      final picker = ImagePicker();
+
+      final XFile? foto = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 70,
+        maxWidth: 1000,
+        maxHeight: 1000,
+      );
+
+      if (foto == null) return;
+
+      final bytes = await foto.readAsBytes();
+
+      if (bytes.isEmpty) {
+        throw Exception('File foto kosong.');
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        fotoSementara = bytes;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Foto gagal dibuka. Coba pilih gambar JPG atau PNG.',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          sedangMemilihFoto = false;
+        });
+      }
+    }
+  }
+
+  void _simpanPerubahan() {
+    final namaBaru = namaController.text.trim();
+    final npmBaru = npmController.text.trim();
+    final prodiBaru = prodiController.text.trim();
+    final emailBaru = emailController.text.trim();
+
+    if (namaBaru.isEmpty ||
+        npmBaru.isEmpty ||
+        prodiBaru.isEmpty ||
+        emailBaru.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Semua data wajib diisi.'),
+        ),
+      );
       return;
     }
 
-    final Uint8List bytes = await foto.readAsBytes();
-
-    if (!mounted) return;
-
-    setState(() {
-      fotoSementara = bytes;
-    });
-  }
-
-  // =========================
-  // SIMPAN PERUBAHAN
-  // =========================
-  void _simpanPerubahan() {
     Navigator.pop(
       context,
-      {
-        'nama': namaController.text.trim(),
-        'npm': npmController.text.trim(),
-        'programStudi': prodiController.text.trim(),
+      <String, dynamic>{
+        'nama': namaBaru,
+        'npm': npmBaru,
+        'programStudi': prodiBaru,
         'semester': semester,
-        'email': emailController.text.trim(),
+        'email': emailBaru,
         'fotoProfil': fotoSementara,
       },
     );
@@ -402,9 +440,6 @@ class _EditDataDiriScreenState
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            // =========================
-            // PREVIEW FOTO
-            // =========================
             CircleAvatar(
               radius: 60,
               backgroundColor: const Color(0xFFEAF4FF),
@@ -423,110 +458,76 @@ class _EditDataDiriScreenState
             const SizedBox(height: 12),
 
             TextButton.icon(
-              onPressed: _pilihFoto,
-              icon: const Icon(
-                Icons.camera_alt_outlined,
+              onPressed: sedangMemilihFoto ? null : _pilihFoto,
+              icon: sedangMemilihFoto
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Icon(Icons.camera_alt_outlined),
+              label: Text(
+                sedangMemilihFoto
+                    ? 'Memuat Foto...'
+                    : 'Ubah Foto Profil',
               ),
-              label: const Text('Ubah Foto Profil'),
             ),
 
             const SizedBox(height: 25),
 
-            // =========================
-            // NAMA
-            // =========================
             TextField(
               controller: namaController,
               decoration: const InputDecoration(
                 labelText: 'Nama Lengkap',
-                prefixIcon: Icon(
-                  Icons.person_outline,
-                ),
+                prefixIcon: Icon(Icons.person_outline),
                 border: OutlineInputBorder(),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            // =========================
-            // NPM
-            // =========================
             TextField(
               controller: npmController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: 'NPM',
-                prefixIcon: Icon(
-                  Icons.badge_outlined,
-                ),
+                prefixIcon: Icon(Icons.badge_outlined),
                 border: OutlineInputBorder(),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            // =========================
-            // PROGRAM STUDI
-            // =========================
             TextField(
               controller: prodiController,
               decoration: const InputDecoration(
                 labelText: 'Program Studi',
-                prefixIcon: Icon(
-                  Icons.school_outlined,
-                ),
+                prefixIcon: Icon(Icons.school_outlined),
                 border: OutlineInputBorder(),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            // =========================
-            // SEMESTER
-            // =========================
             DropdownButtonFormField<String>(
-              initialValue: semester,
+              initialValue: semesterOptions.contains(semester)
+                  ? semester
+                  : 'Semester 5',
               decoration: const InputDecoration(
                 labelText: 'Semester',
-                prefixIcon: Icon(
-                  Icons.menu_book_outlined,
-                ),
+                prefixIcon: Icon(Icons.menu_book_outlined),
                 border: OutlineInputBorder(),
               ),
-              items: const [
-                DropdownMenuItem(
-                  value: 'Semester 1',
-                  child: Text('Semester 1'),
-                ),
-                DropdownMenuItem(
-                  value: 'Semester 2',
-                  child: Text('Semester 2'),
-                ),
-                DropdownMenuItem(
-                  value: 'Semester 3',
-                  child: Text('Semester 3'),
-                ),
-                DropdownMenuItem(
-                  value: 'Semester 4',
-                  child: Text('Semester 4'),
-                ),
-                DropdownMenuItem(
-                  value: 'Semester 5',
-                  child: Text('Semester 5'),
-                ),
-                DropdownMenuItem(
-                  value: 'Semester 6',
-                  child: Text('Semester 6'),
-                ),
-                DropdownMenuItem(
-                  value: 'Semester 7',
-                  child: Text('Semester 7'),
-                ),
-                DropdownMenuItem(
-                  value: 'Semester 8',
-                  child: Text('Semester 8'),
-                ),
-              ],
+              items: semesterOptions
+                  .map(
+                    (item) => DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(item),
+                    ),
+                  )
+                  .toList(),
               onChanged: (value) {
                 if (value != null) {
                   setState(() {
@@ -538,35 +539,26 @@ class _EditDataDiriScreenState
 
             const SizedBox(height: 16),
 
-            // =========================
-            // EMAIL
-            // =========================
             TextField(
               controller: emailController,
-              keyboardType:
-                  TextInputType.emailAddress,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'Email',
-                prefixIcon: Icon(
-                  Icons.email_outlined,
-                ),
+                prefixIcon: Icon(Icons.email_outlined),
                 border: OutlineInputBorder(),
               ),
             ),
 
             const SizedBox(height: 30),
 
-            // =========================
-            // SIMPAN
-            // =========================
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton.icon(
-                onPressed: _simpanPerubahan,
-                icon: const Icon(
-                  Icons.save_outlined,
-                ),
+                onPressed: sedangMemilihFoto
+                    ? null
+                    : _simpanPerubahan,
+                icon: const Icon(Icons.save_outlined),
                 label: const Text(
                   'Simpan Perubahan',
                   style: TextStyle(
@@ -579,16 +571,11 @@ class _EditDataDiriScreenState
 
             const SizedBox(height: 12),
 
-            // =========================
-            // BATAL
-            // =========================
             SizedBox(
               width: double.infinity,
               height: 50,
               child: OutlinedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
                 child: const Text('Batal'),
               ),
             ),
@@ -598,3 +585,14 @@ class _EditDataDiriScreenState
     );
   }
 }
+
+const List<String> semesterOptions = [
+  'Semester 1',
+  'Semester 2',
+  'Semester 3',
+  'Semester 4',
+  'Semester 5',
+  'Semester 6',
+  'Semester 7',
+  'Semester 8',
+];

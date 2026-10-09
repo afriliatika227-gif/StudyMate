@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class TambahTugasScreen extends StatefulWidget {
@@ -9,10 +10,12 @@ class TambahTugasScreen extends StatefulWidget {
   });
 
   @override
-  State<TambahTugasScreen> createState() => _TambahTugasScreenState();
+  State<TambahTugasScreen> createState() =>
+      _TambahTugasScreenState();
 }
 
-class _TambahTugasScreenState extends State<TambahTugasScreen> {
+class _TambahTugasScreenState
+    extends State<TambahTugasScreen> {
   final TextEditingController judulController =
       TextEditingController();
 
@@ -39,20 +42,29 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
   void initState() {
     super.initState();
 
-    if (widget.dataEdit != null) {
-      final data = widget.dataEdit!;
+    final data = widget.dataEdit;
+    if (data == null) return;
 
-      judulController.text = data['judul'] ?? '';
-      mataKuliah = data['mataKuliah'];
-      status = data['status'] ?? 'Belum Dikerjakan';
+    judulController.text = data['judul'] ?? '';
+    deskripsiController.text = data['deskripsi'] ?? '';
 
-      // Deadline yang tersimpan saat ini berbentuk teks,
-      // sehingga kita tampilkan sebagai teks tanggal.
-      final deadline = data['deadline'];
+    final mataKuliahEdit = data['mataKuliah'];
+    if (daftarMataKuliah.contains(mataKuliahEdit)) {
+      mataKuliah = mataKuliahEdit;
+    }
 
-      if (deadline != null && deadline.isNotEmpty) {
-        tanggalDeadline = _parseTanggal(deadline);
-      }
+    status = data['status'] ?? 'Belum Dikerjakan';
+
+    final deadline = data['deadline'];
+    if (deadline != null && deadline.isNotEmpty) {
+      tanggalDeadline = _parseTanggal(deadline);
+    }
+
+    // Jika data sudah memiliki jam, muat jam tersebut.
+    // Mendukung format HH:mm, misalnya 14:30.
+    final jam = data['waktuDeadline'] ?? data['jamDeadline'];
+    if (jam != null) {
+      waktuDeadline = _parseWaktu(jam);
     }
   }
 
@@ -67,7 +79,6 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFD),
-
       appBar: AppBar(
         title: Text(
           sedangEdit ? 'Edit Tugas' : 'Tambah Tugas',
@@ -78,148 +89,142 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _label('Judul Tugas'),
-
-            const SizedBox(height: 8),
-
-            TextField(
-              controller: judulController,
-              decoration: _inputDecoration(
-                'Masukkan judul tugas',
-                Icons.assignment_outlined,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _label('Judul Tugas'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: judulController,
+                textInputAction: TextInputAction.next,
+                decoration: _inputDecoration(
+                  'Masukkan judul tugas',
+                  Icons.assignment_outlined,
+                ),
               ),
-            ),
 
-            const SizedBox(height: 20),
-
-            _label('Mata Kuliah'),
-
-            const SizedBox(height: 8),
-
-            DropdownButtonFormField<String>(
-              initialValue: mataKuliah,
-              decoration: _inputDecoration(
-                'Pilih mata kuliah',
-                Icons.menu_book_outlined,
+              const SizedBox(height: 20),
+              _label('Mata Kuliah'),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                isExpanded: true,
+                initialValue: daftarMataKuliah
+                        .contains(mataKuliah)
+                    ? mataKuliah
+                    : null,
+                decoration: _inputDecoration(
+                  'Pilih mata kuliah',
+                  Icons.menu_book_outlined,
+                ),
+                items: daftarMataKuliah.map((item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    mataKuliah = value;
+                  });
+                },
               ),
-              items: daftarMataKuliah.map((mataKuliah) {
-                return DropdownMenuItem<String>(
-                  value: mataKuliah,
-                  child: Text(mataKuliah),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  mataKuliah = value;
-                });
-              },
-            ),
 
-            const SizedBox(height: 20),
-
-            _label('Deskripsi'),
-
-            const SizedBox(height: 8),
-
-            TextField(
-              controller: deskripsiController,
-              maxLines: 4,
-              decoration: _inputDecoration(
-                'Masukkan deskripsi tugas',
-                Icons.description_outlined,
+              const SizedBox(height: 20),
+              _label('Deskripsi'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: deskripsiController,
+                maxLines: 4,
+                decoration: _inputDecoration(
+                  'Masukkan deskripsi tugas',
+                  Icons.description_outlined,
+                ),
               ),
-            ),
 
-            const SizedBox(height: 20),
-
-            _label('Deadline'),
-
-            const SizedBox(height: 8),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _dateButton(),
-                ),
-
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: _timeButton(),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            _label('Status'),
-
-            const SizedBox(height: 8),
-
-            DropdownButtonFormField<String>(
-              initialValue: status,
-              decoration: _inputDecoration(
-                'Pilih status',
-                Icons.check_circle_outline,
+              const SizedBox(height: 20),
+              _label('Deadline'),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(child: _dateButton()),
+                  const SizedBox(width: 12),
+                  Expanded(child: _timeButton()),
+                ],
               ),
-              items: const [
-                DropdownMenuItem(
-                  value: 'Belum Dikerjakan',
-                  child: Text('Belum Dikerjakan'),
+
+              const SizedBox(height: 20),
+              _label('Status'),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                isExpanded: true,
+                initialValue: const [
+                  'Belum Dikerjakan',
+                  'Sedang Dikerjakan',
+                  'Selesai',
+                ].contains(status)
+                    ? status
+                    : 'Belum Dikerjakan',
+                decoration: _inputDecoration(
+                  'Pilih status',
+                  Icons.check_circle_outline,
                 ),
-                DropdownMenuItem(
-                  value: 'Sedang Dikerjakan',
-                  child: Text('Sedang Dikerjakan'),
-                ),
-                DropdownMenuItem(
-                  value: 'Selesai',
-                  child: Text('Selesai'),
-                ),
-              ],
-              onChanged: (value) {
-                if (value != null) {
+                items: const [
+                  DropdownMenuItem(
+                    value: 'Belum Dikerjakan',
+                    child: Text('Belum Dikerjakan'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Sedang Dikerjakan',
+                    child: Text('Sedang Dikerjakan'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Selesai',
+                    child: Text('Selesai'),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value == null) return;
                   setState(() {
                     status = value;
                   });
-                }
-              },
-            ),
+                },
+              ),
 
-            const SizedBox(height: 30),
-
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton.icon(
-                onPressed: _simpanTugas,
-                icon: const Icon(Icons.save_outlined),
-                label: Text(
-                  sedangEdit
-                      ? 'Simpan Perubahan'
-                      : 'Simpan Tugas',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton.icon(
+                  onPressed: _simpanTugas,
+                  icon: const Icon(Icons.save_outlined),
+                  label: Text(
+                    sedangEdit
+                        ? 'Simpan Perubahan'
+                        : 'Simpan Tugas',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6EA8FE),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        const Color(0xFF6EA8FE),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                 ),
               ),
-            ),
-
-            const SizedBox(height: 15),
-          ],
+              const SizedBox(height: 15),
+            ],
+          ),
         ),
       ),
     );
@@ -272,7 +277,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
       borderRadius: BorderRadius.circular(14),
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: 14,
+          horizontal: 12,
           vertical: 16,
         ),
         decoration: BoxDecoration(
@@ -289,14 +294,15 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
               color: Color(0xFF6EA8FE),
               size: 20,
             ),
-
-            const SizedBox(width: 10),
-
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 tanggalDeadline == null
                     ? 'Tanggal'
-                    : '${tanggalDeadline!.day}/${tanggalDeadline!.month}/${tanggalDeadline!.year}',
+                    : '${tanggalDeadline!.day}/'
+                        '${tanggalDeadline!.month}/'
+                        '${tanggalDeadline!.year}',
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: tanggalDeadline == null
                       ? Colors.grey
@@ -317,7 +323,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
       borderRadius: BorderRadius.circular(14),
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: 14,
+          horizontal: 12,
           vertical: 16,
         ),
         decoration: BoxDecoration(
@@ -334,14 +340,13 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
               color: Color(0xFF6EA8FE),
               size: 20,
             ),
-
-            const SizedBox(width: 10),
-
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 waktuDeadline == null
                     ? 'Waktu'
                     : waktuDeadline!.format(context),
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: waktuDeadline == null
                       ? Colors.grey
@@ -357,18 +362,30 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
   }
 
   Future<void> _pilihTanggal() async {
+    final sekarang = DateTime.now();
+    final hariIni = DateTime(
+      sekarang.year,
+      sekarang.month,
+      sekarang.day,
+    );
+
+    final tanggalAwal = tanggalDeadline ?? hariIni;
+    final tanggalValid = tanggalAwal.isBefore(hariIni)
+        ? hariIni
+        : tanggalAwal;
+
     final tanggal = await showDatePicker(
       context: context,
-      initialDate: tanggalDeadline ?? DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: tanggalValid,
+      firstDate: hariIni,
       lastDate: DateTime(2035),
     );
 
-    if (tanggal != null) {
-      setState(() {
-        tanggalDeadline = tanggal;
-      });
-    }
+    if (!mounted || tanggal == null) return;
+
+    setState(() {
+      tanggalDeadline = tanggal;
+    });
   }
 
   Future<void> _pilihWaktu() async {
@@ -377,32 +394,35 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
       initialTime: waktuDeadline ?? TimeOfDay.now(),
     );
 
-    if (waktu != null) {
-      setState(() {
-        waktuDeadline = waktu;
-      });
-    }
+    if (!mounted || waktu == null) return;
+
+    setState(() {
+      waktuDeadline = waktu;
+    });
   }
 
   void _simpanTugas() {
     if (judulController.text.trim().isEmpty ||
         mataKuliah == null ||
-        tanggalDeadline == null) {
+        tanggalDeadline == null ||
+        waktuDeadline == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Mohon lengkapi judul, mata kuliah, dan deadline.',
+            'Mohon lengkapi judul, mata kuliah, tanggal, dan waktu deadline.',
           ),
         ),
       );
-
       return;
     }
 
-    final tanggal =
-        '${tanggalDeadline!.day} '
+    final tanggal = '${tanggalDeadline!.day} '
         '${_namaBulan(tanggalDeadline!.month)} '
         '${tanggalDeadline!.year}';
+
+    final jam =
+        '${waktuDeadline!.hour.toString().padLeft(2, '0')}:'
+        '${waktuDeadline!.minute.toString().padLeft(2, '0')}';
 
     Navigator.pop(
       context,
@@ -410,6 +430,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
         'judul': judulController.text.trim(),
         'mataKuliah': mataKuliah!,
         'deadline': tanggal,
+        'waktuDeadline': jam,
         'status': status,
         'deskripsi': deskripsiController.text.trim(),
       },
@@ -420,9 +441,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
     try {
       final bagian = tanggal.split(' ');
 
-      if (bagian.length != 3) {
-        return null;
-      }
+      if (bagian.length != 3) return null;
 
       final hari = int.parse(bagian[0]);
 
@@ -444,15 +463,38 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
       final bulan = namaBulan.indexOf(bagian[1]) + 1;
       final tahun = int.parse(bagian[2]);
 
-      if (bulan < 1) {
+      if (bulan < 1 || hari < 1 || hari > 31) {
         return null;
       }
 
-      return DateTime(
-        tahun,
-        bulan,
-        hari,
-      );
+      final hasil = DateTime(tahun, bulan, hari);
+
+      if (hasil.year != tahun ||
+          hasil.month != bulan ||
+          hasil.day != hari) {
+        return null;
+      }
+
+      return hasil;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  TimeOfDay? _parseWaktu(String waktu) {
+    try {
+      final bagian = waktu.split(':');
+      if (bagian.length != 2) return null;
+
+      final jam = int.parse(bagian[0]);
+      final menit = int.parse(bagian[1]);
+
+      if (jam < 0 || jam > 23 ||
+          menit < 0 || menit > 59) {
+        return null;
+      }
+
+      return TimeOfDay(hour: jam, minute: menit);
     } catch (_) {
       return null;
     }

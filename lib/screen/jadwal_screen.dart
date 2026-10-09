@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'tambah_jadwal_screen.dart';
 
 class JadwalScreen extends StatefulWidget {
@@ -10,7 +10,9 @@ class JadwalScreen extends StatefulWidget {
 }
 
 class _JadwalScreenState extends State<JadwalScreen> {
-  final List<Map<String, String>> jadwal = [
+  final Color warnaUtama = const Color(0xFF6EA8FE);
+
+  final List<Map<String, String>> daftarJadwal = [
     {
       'hari': 'Senin',
       'mataKuliah': 'Pemrograman Mobile',
@@ -19,242 +21,73 @@ class _JadwalScreenState extends State<JadwalScreen> {
     },
     {
       'hari': 'Selasa',
-      'mataKuliah': 'Statistika',
+      'mataKuliah': 'Statistika Pendidikan',
       'jam': '10.00 - 12.00',
       'ruang': 'Ruang 204',
     },
     {
       'hari': 'Rabu',
-      'mataKuliah': 'Metodologi Penelitian',
-      'jam': '08.00 - 10.30',
-      'ruang': 'Ruang 301',
+      'mataKuliah': 'Internet of Things',
+      'jam': '13.00 - 15.00',
+      'ruang': 'Lab IoT',
     },
     {
       'hari': 'Kamis',
-      'mataKuliah': 'Internet of Things',
-      'jam': '13.00 - 15.30',
-      'ruang': 'Lab IoT',
+      'mataKuliah': 'Metodologi Penelitian',
+      'jam': '08.00 - 10.00',
+      'ruang': 'Ruang 202',
     },
     {
       'hari': 'Jumat',
       'mataKuliah': 'Perencanaan Pembelajaran',
-      'jam': '08.00 - 10.00',
+      'jam': '09.00 - 11.00',
       'ruang': 'Ruang 105',
     },
   ];
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFD),
-
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'Jadwal Kuliah',
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+  Future<void> _tambahJadwal() async {
+    final hasil = await Navigator.push<Map<String, String>>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const TambahJadwalScreen(),
       ),
+    );
 
-      body: ListView.builder(
-        padding: const EdgeInsets.all(20),
-        itemCount: jadwal.length,
-        itemBuilder: (context, index) {
-          final item = jadwal[index];
+    if (!mounted || hasil == null) return;
 
-          return _jadwalCard(
-            context,
-            index: index,
-            hari: item['hari']!,
-            mataKuliah: item['mataKuliah']!,
-            jam: item['jam']!,
-            ruang: item['ruang']!,
-          );
-        },
-      ),
+    setState(() {
+      daftarJadwal.add(hasil);
+    });
 
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'fab-jadwal',
-        onPressed: () async {
-          final hasil = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const TambahJadwalScreen(),
-            ),
-          );
-
-          if (hasil != null) {
-            setState(() {
-              jadwal.add({
-                'hari': hasil['hari'] ?? '',
-                'mataKuliah': hasil['mataKuliah'] ?? '',
-                'jam': hasil['jam'] ?? '',
-                'ruang': hasil['ruang'] ?? '',
-              });
-            });
-          }
-        },
-        backgroundColor: const Color(0xFF6EA8FE),
-        icon: const Icon(Icons.add),
-        label: const Text('Tambah Jadwal'),
-      ),
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Jadwal berhasil ditambahkan')),
     );
   }
 
-  Widget _jadwalCard(
-    BuildContext context, {
-    required int index,
-    required String hari,
-    required String mataKuliah,
-    required String jam,
-    required String ruang,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: () {
-          _detailJadwal(
-            context,
-            index,
-            hari,
-            mataKuliah,
-            jam,
-            ruang,
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Container(
-                width: 58,
-                height: 58,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFEAF4FF),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: const Icon(
-                  Icons.calendar_month_rounded,
-                  color: Color(0xFF6EA8FE),
-                  size: 30,
-                ),
-              ),
+  Future<void> _detailJadwal(int index) async {
+    if (index < 0 || index >= daftarJadwal.length) return;
 
-              const SizedBox(width: 15),
+    final jadwal = Map<String, String>.from(daftarJadwal[index]);
 
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      hari,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFF6EA8FE),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 4),
-
-                    Text(
-                      mataKuliah,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 7),
-
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.access_time_rounded,
-                          size: 15,
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          jam,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 4),
-
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on_outlined,
-                          size: 15,
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(width: 5),
-                        Expanded(
-                          child: Text(
-                            ruang,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: Colors.grey,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _detailJadwal(
-    BuildContext context,
-    int index,
-    String hari,
-    String mataKuliah,
-    String jam,
-    String ruang,
-  ) {
-    showModalBottomSheet(
+    await showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(25),
+          top: Radius.circular(28),
         ),
       ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(24),
+      builder: (sheetContext) {
+        return SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(
+            24,
+            12,
+            24,
+            24 + MediaQuery.of(sheetContext).viewInsets.bottom,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,89 +95,72 @@ class _JadwalScreenState extends State<JadwalScreen> {
               const Text(
                 'Detail Jadwal',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 23,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
-              const SizedBox(height: 20),
-
-              _detailRow(
-                Icons.calendar_today_rounded,
+              const SizedBox(height: 22),
+              _barisDetail(
+                Icons.calendar_today_outlined,
                 'Hari',
-                hari,
+                jadwal['hari'] ?? '-',
               ),
-
-              _detailRow(
-                Icons.menu_book_rounded,
+              _barisDetail(
+                Icons.menu_book_outlined,
                 'Mata Kuliah',
-                mataKuliah,
+                jadwal['mataKuliah'] ?? '-',
               ),
-
-              _detailRow(
-                Icons.access_time_rounded,
+              _barisDetail(
+                Icons.access_time,
                 'Jam',
-                jam,
+                jadwal['jam'] ?? '-',
               ),
-
-              _detailRow(
+              _barisDetail(
                 Icons.location_on_outlined,
                 'Ruang',
-                ruang,
+                jadwal['ruang'] ?? '-',
               ),
-
-              const SizedBox(height: 15),
-
-              // TOMBOL HAPUS
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
+                height: 50,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.pop(context);
-                    _konfirmasiHapus(index);
+                    Navigator.pop(sheetContext);
+                    _editJadwal(index);
                   },
-                  icon: const Icon(
-                    Icons.delete_outline,
-                  ),
-                  label: const Text(
-                    'Hapus Jadwal',
-                  ),
+                  icon: const Icon(Icons.edit_outlined),
+                  label: const Text('Edit Jadwal'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: warnaUtama,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 14,
-                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                 ),
               ),
-
               const SizedBox(height: 10),
-
-              // TOMBOL TUTUP
               SizedBox(
                 width: double.infinity,
-                child: OutlinedButton(
+                height: 50,
+                child: OutlinedButton.icon(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(sheetContext);
+                    _konfirmasiHapus(index);
                   },
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text('Hapus Jadwal'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF6EA8FE),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 14,
-                    ),
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: const Text(
-                    'Tutup',
-                  ),
                 ),
               ),
+              const SizedBox(height: 8),
             ],
           ),
         );
@@ -352,90 +168,208 @@ class _JadwalScreenState extends State<JadwalScreen> {
     );
   }
 
-  void _konfirmasiHapus(int index) {
-    showDialog(
+  Widget _barisDetail(
+    IconData ikon,
+    String label,
+    String nilai,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(ikon, color: warnaUtama, size: 24),
+          const SizedBox(width: 14),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Colors.black87,
+                ),
+                children: [
+                  TextSpan(
+                    text: '$label: ',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(text: nilai),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _editJadwal(int index) async {
+    if (index < 0 || index >= daftarJadwal.length) return;
+
+    final jadwalLama =
+        Map<String, String>.from(daftarJadwal[index]);
+
+    final hasil = await Navigator.push<Map<String, String>>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TambahJadwalScreen(
+          jadwalAwal: jadwalLama,
+        ),
+      ),
+    );
+
+    if (!mounted || hasil == null) return;
+    if (index >= daftarJadwal.length) return;
+
+    setState(() {
+      daftarJadwal[index] = hasil;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Jadwal berhasil diperbarui')),
+    );
+  }
+
+  Future<void> _konfirmasiHapus(int index) async {
+    if (index < 0 || index >= daftarJadwal.length) return;
+
+    final konfirmasi = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Hapus Jadwal?',
-          ),
-          content: const Text(
-            'Apakah kamu yakin ingin menghapus jadwal ini?',
+          title: const Text('Hapus Jadwal?'),
+          content: Text(
+            'Jadwal ${daftarJadwal[index]['mataKuliah']} '
+            'akan dihapus dari daftar.',
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-              },
-              child: const Text(
-                'Batal',
-              ),
+              onPressed: () =>
+                  Navigator.pop(dialogContext, false),
+              child: const Text('Batal'),
             ),
-
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  jadwal.removeAt(index);
-                });
-
-                Navigator.pop(dialogContext);
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Jadwal berhasil dihapus.',
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
+            FilledButton(
+              onPressed: () =>
+                  Navigator.pop(dialogContext, true),
+              style: FilledButton.styleFrom(
                 backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
               ),
-              child: const Text(
-                'Hapus',
-              ),
+              child: const Text('Hapus'),
             ),
           ],
         );
       },
     );
+
+    if (!mounted || konfirmasi != true) return;
+    if (index >= daftarJadwal.length) return;
+
+    setState(() {
+      daftarJadwal.removeAt(index);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Jadwal berhasil dihapus')),
+    );
   }
 
-  Widget _detailRow(
-    IconData icon,
-    String title,
-    String value,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: const Color(0xFF6EA8FE),
-            size: 22,
-          ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFD),
+      appBar: AppBar(
+        title: const Text(
+          'Jadwal Kuliah',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black87,
+        elevation: 0,
+      ),
+      body: daftarJadwal.isEmpty
+          ? const Center(
+              child: Text('Belum ada jadwal kuliah.'),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: daftarJadwal.length,
+              itemBuilder: (context, index) {
+                final jadwal = daftarJadwal[index];
 
-          const SizedBox(width: 12),
-
-          Text(
-            '$title: ',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 14),
+                  color: Colors.white,
+                  elevation: 1,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () => _detailJadwal(index),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 52,
+                            height: 52,
+                            decoration: BoxDecoration(
+                              color: warnaUtama.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Icon(
+                              Icons.calendar_month_outlined,
+                              color: warnaUtama,
+                              size: 28,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  jadwal['mataKuliah'] ?? '-',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 7),
+                                Text(
+                                  '${jadwal['hari']} • ${jadwal['jam']}',
+                                  style: const TextStyle(
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  jadwal['ruang'] ?? '-',
+                                  style: const TextStyle(
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(
+                            Icons.chevron_right,
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                color: Colors.black54,
-              ),
-            ),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _tambahJadwal,
+        backgroundColor: warnaUtama,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add),
+        label: const Text('Tambah Jadwal'),
       ),
     );
   }

@@ -32,7 +32,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // Animasi ikon buku
     _logoController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
@@ -48,7 +47,6 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // Animasi kemunculan tulisan
     _textController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
@@ -69,7 +67,6 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // Animasi StudyMate yang terus melayang
     _floatController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
@@ -85,7 +82,6 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // Animasi titik loading dan versi
     _loadingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -96,7 +92,6 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeIn,
     );
 
-    // Jalankan animasi
     _logoController.forward();
 
     Future.delayed(const Duration(milliseconds: 250), () {
@@ -111,7 +106,6 @@ class _SplashScreenState extends State<SplashScreen>
       _loadingController.forward();
     });
 
-    // Pindah ke HomeScreen setelah 3 detik
     _navigationTimer = Timer(
       const Duration(seconds: 3),
       () {
@@ -130,7 +124,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     _navigationTimer?.cancel();
-
     _logoController.dispose();
     _textController.dispose();
     _floatController.dispose();
@@ -149,7 +142,6 @@ class _SplashScreenState extends State<SplashScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Ikon buku membesar saat muncul
               ScaleTransition(
                 scale: _logoScale,
                 child: Container(
@@ -169,7 +161,6 @@ class _SplashScreenState extends State<SplashScreen>
 
               const SizedBox(height: 24),
 
-              // Tulisan StudyMate bergerak naik-turun terus
               FadeTransition(
                 opacity: _textFade,
                 child: SlideTransition(
@@ -200,7 +191,6 @@ class _SplashScreenState extends State<SplashScreen>
 
               const SizedBox(height: 8),
 
-              // Slogan muncul perlahan
               FadeTransition(
                 opacity: _textFade,
                 child: const Text(
@@ -215,7 +205,6 @@ class _SplashScreenState extends State<SplashScreen>
 
               const SizedBox(height: 30),
 
-              // Titik loading
               FadeTransition(
                 opacity: _loadingFade,
                 child: const Text(

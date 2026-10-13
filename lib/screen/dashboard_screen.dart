@@ -1,16 +1,146 @@
 
 import 'package:flutter/material.dart';
 
+import '../database/database_helper.dart';
 import 'mata_kuliah_screen.dart';
 import 'tugas_screen.dart';
 import 'jadwal_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
   static const Color biru = Color(0xFF3478F6);
   static const Color latar = Color(0xFFF5F8FF);
   static const Color teks = Color(0xFF202B45);
+
+  final DatabaseHelper _db = DatabaseHelper.instance;
+
+  int jumlahMataKuliah = 0;
+  int jumlahTugasAktif = 0;
+  int jumlahDeadline = 0;
+  bool sedangMemuat = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _muatRingkasan();
+  }
+
+  Future<void> _muatRingkasan() async {
+    try {
+      final hasilMataKuliah = await _db.getCourses();
+      final hasilTugas = await _db.getTasks();
+      final sekarang = DateTime.now();
+
+      int tugasAktif = 0;
+      int deadline = 0;
+
+      for (final item in hasilTugas) {
+        final status = '${item['status'] ?? ''}';
+
+        if (status == 'Selesai') continue;
+
+        tugasAktif++;
+
+        final tanggal = _parseDeadline(
+          '${item['deadline'] ?? ''}',
+          '${item['deadline_time'] ?? '23:59'}',
+        );
+
+        if (tanggal != null && !tanggal.isBefore(sekarang)) {
+          deadline++;
+        }
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        jumlahMataKuliah = hasilMataKuliah.length;
+        jumlahTugasAktif = tugasAktif;
+        jumlahDeadline = deadline;
+        sedangMemuat = false;
+      });
+    } catch (e) {
+      debugPrint('Gagal memuat ringkasan dashboard: $e');
+
+      if (!mounted) return;
+
+      setState(() {
+        sedangMemuat = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gagal memuat ringkasan akademik.'),
+        ),
+      );
+    }
+  }
+
+  DateTime? _parseDeadline(String tanggal, String waktu) {
+    try {
+      final bagian = tanggal.split(' ');
+      if (bagian.length != 3) return null;
+
+      final hari = int.parse(bagian[0]);
+      final tahun = int.parse(bagian[2]);
+
+      const bulanIndonesia = {
+        'Januari': 1,
+        'Februari': 2,
+        'Maret': 3,
+        'April': 4,
+        'Mei': 5,
+        'Juni': 6,
+        'Juli': 7,
+        'Agustus': 8,
+        'September': 9,
+        'Oktober': 10,
+        'November': 11,
+        'Desember': 12,
+      };
+
+      final bulan = bulanIndonesia[bagian[1]];
+      if (bulan == null) return null;
+
+      final bagianWaktu = waktu.split(':');
+      if (bagianWaktu.length != 2) return null;
+
+      final jam = int.parse(bagianWaktu[0]);
+      final menit = int.parse(bagianWaktu[1]);
+
+      if (jam < 0 || jam > 23 || menit < 0 || menit > 59) {
+        return null;
+      }
+
+      final hasil = DateTime(tahun, bulan, hari, jam, menit);
+
+      if (hasil.year != tahun ||
+          hasil.month != bulan ||
+          hasil.day != hari) {
+        return null;
+      }
+
+      return hasil;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _bukaHalaman(Widget halaman) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => halaman),
+    );
+
+    if (!mounted) return;
+    await _muatRingkasan();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +152,6 @@ class DashboardScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // HEADER
               Row(
                 children: [
                   Container(
@@ -81,14 +210,9 @@ class DashboardScreen extends StatelessWidget {
                       ],
                     ),
                     child: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const TugasScreen(),
-                          ),
-                        );
-                      },
+                      onPressed: () => _bukaHalaman(
+                        const TugasScreen(),
+                      ),
                       icon: const Icon(
                         Icons.notifications_none_rounded,
                         color: teks,
@@ -101,7 +225,6 @@ class DashboardScreen extends StatelessWidget {
 
               const SizedBox(height: 28),
 
-              // SAPAAN
               const Text(
                 'Halo, Tika Afrilia 👋',
                 style: TextStyle(
@@ -122,7 +245,6 @@ class DashboardScreen extends StatelessWidget {
 
               const SizedBox(height: 23),
 
-              // BANNER MOTIVASI
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -191,7 +313,6 @@ class DashboardScreen extends StatelessWidget {
 
               const SizedBox(height: 27),
 
-              // RINGKASAN
               const Text(
                 'Ringkasan Akademik',
                 style: TextStyle(
@@ -214,41 +335,35 @@ class DashboardScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _summaryCard(
-                      number: '6',
+                      number: sedangMemuat
+                          ? '…'
+                          : '$jumlahMataKuliah',
                       title: 'Mata Kuliah',
                       icon: Icons.menu_book_rounded,
                       gradient: const [
                         Color(0xFF65B4FF),
                         Color(0xFF3478F6),
                       ],
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const MataKuliahScreen(),
-                          ),
-                        );
-                      },
+                      onTap: () => _bukaHalaman(
+                        const MataKuliahScreen(),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: _summaryCard(
-                      number: '4',
+                      number: sedangMemuat
+                          ? '…'
+                          : '$jumlahTugasAktif',
                       title: 'Tugas Aktif',
                       icon: Icons.assignment_rounded,
                       gradient: const [
                         Color(0xFFFFA9C1),
                         Color(0xFFEF78A0),
                       ],
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const TugasScreen(),
-                          ),
-                        );
-                      },
+                      onTap: () => _bukaHalaman(
+                        const TugasScreen(),
+                      ),
                     ),
                   ),
                 ],
@@ -256,16 +371,10 @@ class DashboardScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // DEADLINE
               InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TugasScreen(),
-                    ),
-                  );
-                },
+                onTap: () => _bukaHalaman(
+                  const TugasScreen(),
+                ),
                 borderRadius: BorderRadius.circular(21),
                 child: Container(
                   padding: const EdgeInsets.all(18),
@@ -306,7 +415,7 @@ class DashboardScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              'Jangan lupa selesaikan tugasmu',
+                              'Tugas yang tenggatnya belum lewat',
                               style: TextStyle(
                                 color: Color(0xFF99886A),
                                 fontSize: 12,
@@ -315,9 +424,9 @@ class DashboardScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Text(
-                        '2',
-                        style: TextStyle(
+                      Text(
+                        sedangMemuat ? '…' : '$jumlahDeadline',
+                        style: const TextStyle(
                           color: Color(0xFFD99420),
                           fontWeight: FontWeight.w800,
                           fontSize: 27,
@@ -330,7 +439,6 @@ class DashboardScreen extends StatelessWidget {
 
               const SizedBox(height: 28),
 
-              // MENU UTAMA
               Row(
                 children: [
                   const Expanded(
@@ -363,14 +471,9 @@ class DashboardScreen extends StatelessWidget {
                       title: 'Jadwal',
                       color: const Color(0xFFE6F1FF),
                       iconColor: const Color(0xFF3478F6),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const JadwalScreen(),
-                          ),
-                        );
-                      },
+                      onTap: () => _bukaHalaman(
+                        const JadwalScreen(),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -380,14 +483,9 @@ class DashboardScreen extends StatelessWidget {
                       title: 'Tugas',
                       color: const Color(0xFFFFEAF0),
                       iconColor: const Color(0xFFE66F97),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const TugasScreen(),
-                          ),
-                        );
-                      },
+                      onTap: () => _bukaHalaman(
+                        const TugasScreen(),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -397,14 +495,9 @@ class DashboardScreen extends StatelessWidget {
                       title: 'Mata Kuliah',
                       color: const Color(0xFFE5F7EC),
                       iconColor: const Color(0xFF4CA878),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const MataKuliahScreen(),
-                          ),
-                        );
-                      },
+                      onTap: () => _bukaHalaman(
+                        const MataKuliahScreen(),
+                      ),
                     ),
                   ),
                 ],
@@ -412,7 +505,6 @@ class DashboardScreen extends StatelessWidget {
 
               const SizedBox(height: 28),
 
-              // AKTIVITAS HARI INI
               const Text(
                 'Aktivitas Hari Ini',
                 style: TextStyle(
@@ -437,14 +529,9 @@ class DashboardScreen extends StatelessWidget {
                 subtitle: 'Periksa jadwal kuliahmu',
                 color: const Color(0xFFE6F1FF),
                 iconColor: const Color(0xFF3478F6),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const JadwalScreen(),
-                    ),
-                  );
-                },
+                onTap: () => _bukaHalaman(
+                  const JadwalScreen(),
+                ),
               ),
               const SizedBox(height: 11),
               _activityCard(
@@ -453,14 +540,9 @@ class DashboardScreen extends StatelessWidget {
                 subtitle: 'Periksa tugas yang masih aktif',
                 color: const Color(0xFFFFEAF0),
                 iconColor: const Color(0xFFE66F97),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TugasScreen(),
-                    ),
-                  );
-                },
+                onTap: () => _bukaHalaman(
+                  const TugasScreen(),
+                ),
               ),
 
               const SizedBox(height: 24),
@@ -482,7 +564,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // KARTU RINGKASAN
   static Widget _summaryCard({
     required String number,
     required String title,
@@ -572,7 +653,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // MENU UTAMA
   static Widget _menuTile({
     required IconData icon,
     required String title,
@@ -629,7 +709,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // AKTIVITAS
   static Widget _activityCard({
     required IconData icon,
     required String title,

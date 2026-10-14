@@ -63,10 +63,13 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
       });
     } catch (_) {
       if (!mounted) return;
+
       setState(() => isLoading = false);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal memuat data diri.')),
+        const SnackBar(
+          content: Text('Gagal memuat data diri.'),
+        ),
       );
     }
   }
@@ -89,8 +92,12 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
     await prefs.setString('profile_semester', semesterBaru);
     await prefs.setString('profile_email', emailBaru);
 
+    // Foto lama tetap dipertahankan jika tidak memilih foto baru.
     if (fotoBaru != null) {
-      await prefs.setString('profile_foto', base64Encode(fotoBaru));
+      await prefs.setString(
+        'profile_foto',
+        base64Encode(fotoBaru),
+      );
     }
   }
 
@@ -163,7 +170,9 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
       return const Scaffold(
         backgroundColor: pastelBackground,
         body: Center(
-          child: CircularProgressIndicator(color: pastelLavender),
+          child: CircularProgressIndicator(
+            color: pastelLavender,
+          ),
         ),
       );
     }
@@ -202,7 +211,10 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
             const SizedBox(height: 6),
             const Text(
               'Berikut adalah informasi data dirimu.',
-              style: TextStyle(color: pastelMuted, fontSize: 13),
+              style: TextStyle(
+                color: pastelMuted,
+                fontSize: 13,
+              ),
             ),
             const SizedBox(height: 18),
             _buildInfoCard(
@@ -245,7 +257,10 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
               height: 54,
               child: ElevatedButton.icon(
                 onPressed: _bukaEditDataDiri,
-                icon: const Icon(Icons.edit_rounded, size: 19),
+                icon: const Icon(
+                  Icons.edit_rounded,
+                  size: 19,
+                ),
                 label: const Text(
                   'Edit Data Diri',
                   style: TextStyle(
@@ -285,7 +300,10 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white, width: 2),
+        border: Border.all(
+          color: Colors.white,
+          width: 2,
+        ),
       ),
       child: Column(
         children: [
@@ -296,7 +314,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: pastelLavender.withOpacity(0.20),
+                  color: pastelLavender.withValues(alpha: 0.20),
                   blurRadius: 18,
                   offset: const Offset(0, 7),
                 ),
@@ -333,7 +351,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
               vertical: 7,
             ),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(30),
             ),
             child: const Row(
@@ -383,10 +401,12 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFECEBFA)),
+        border: Border.all(
+          color: const Color(0xFFECEBFA),
+        ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF7775B8).withOpacity(0.05),
+            color: const Color(0xFF7775B8).withValues(alpha: 0.05),
             blurRadius: 14,
             offset: const Offset(0, 5),
           ),
@@ -401,7 +421,11 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
               color: iconBackground,
               borderRadius: BorderRadius.circular(15),
             ),
-            child: Icon(icon, color: iconColor, size: 23),
+            child: Icon(
+              icon,
+              color: iconColor,
+              size: 23,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -474,11 +498,13 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
   @override
   void initState() {
     super.initState();
+
     namaController = TextEditingController(text: widget.nama);
     npmController = TextEditingController(text: widget.npm);
     prodiController =
         TextEditingController(text: widget.programStudi);
     emailController = TextEditingController(text: widget.email);
+
     semester = widget.semester;
     fotoSementara = widget.fotoProfil;
   }
@@ -509,11 +535,13 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
       if (foto == null) return;
 
       final bytes = await foto.readAsBytes();
+
       if (bytes.isEmpty) {
         throw Exception('File foto kosong.');
       }
 
       if (!mounted) return;
+
       setState(() => fotoSementara = bytes);
     } catch (_) {
       if (!mounted) return;
@@ -570,20 +598,30 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
   ) {
     return InputDecoration(
       labelText: label,
-      prefixIcon: Icon(icon, color: const Color.fromARGB(255, 171, 175, 238)),
+      prefixIcon: Icon(
+        icon,
+        color: const Color(0xFFABAFEE),
+      ),
       filled: true,
       fillColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFE6E4F8)),
+        borderSide: const BorderSide(
+          color: Color(0xFFE6E4F8),
+        ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFE6E4F8)),
+        borderSide: const BorderSide(
+          color: Color(0xFFE6E4F8),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: pastelLavender, width: 1.5),
+        borderSide: const BorderSide(
+          color: pastelLavender,
+          width: 1.5,
+        ),
       ),
     );
   }
@@ -616,7 +654,7 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: pastelLavender.withOpacity(0.15),
+                    color: pastelLavender.withValues(alpha: 0.15),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -644,7 +682,9 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
                     )
                   : const Icon(Icons.camera_alt_outlined),
               label: Text(
@@ -665,7 +705,10 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
               ),
               child: const Row(
                 children: [
-                  Icon(Icons.edit_note_rounded, color: pastelLavender),
+                  Icon(
+                    Icons.edit_note_rounded,
+                    color: pastelLavender,
+                  ),
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -771,7 +814,9 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                 onPressed: () => Navigator.pop(context),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: pastelDark,
-                  side: const BorderSide(color: Color(0xFFDCD9F5)),
+                  side: const BorderSide(
+                    color: Color(0xFFDCD9F5),
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(17),
                   ),

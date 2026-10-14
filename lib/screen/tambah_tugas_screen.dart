@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import '../database/database_helper.dart';
 
 class TambahTugasScreen extends StatefulWidget {
   final Map<String, String>? dataEdit;
@@ -14,27 +15,23 @@ class TambahTugasScreen extends StatefulWidget {
       _TambahTugasScreenState();
 }
 
-class _TambahTugasScreenState
-    extends State<TambahTugasScreen> {
+class _TambahTugasScreenState extends State<TambahTugasScreen> {
+  final DatabaseHelper _db = DatabaseHelper.instance;
+
   final TextEditingController judulController =
       TextEditingController();
-
   final TextEditingController deskripsiController =
       TextEditingController();
 
+  List<Map<String, dynamic>> daftarMataKuliah = [];
   String? mataKuliah;
   DateTime? tanggalDeadline;
   TimeOfDay? waktuDeadline;
   String status = 'Belum Dikerjakan';
 
-  final List<String> daftarMataKuliah = [
-    'Pemrograman Mobile',
-    'Internet of Things',
-    'Metodologi Penelitian',
-    'Statistika Pendidikan',
-    'Perencanaan Pembelajaran',
-    'Jaringan Komputer',
-  ];
+  bool sedangMemuatMataKuliah = true;
+  bool sedangMenyimpan = false;
+  String? pesanErrorMataKuliah;
 
   bool get sedangEdit => widget.dataEdit != null;
 
@@ -43,28 +40,56 @@ class _TambahTugasScreenState
     super.initState();
 
     final data = widget.dataEdit;
-    if (data == null) return;
+    if (data != null) {
+      judulController.text = data['judul'] ?? '';
+      deskripsiController.text = data['deskripsi'] ?? '';
+      mataKuliah = data['mataKuliah'];
+      status = data['status'] ?? 'Belum Dikerjakan';
 
-    judulController.text = data['judul'] ?? '';
-    deskripsiController.text = data['deskripsi'] ?? '';
+      final deadline = data['deadline'];
+      if (deadline != null && deadline.isNotEmpty) {
+        tanggalDeadline = _parseTanggal(deadline);
+      }
 
-    final mataKuliahEdit = data['mataKuliah'];
-    if (daftarMataKuliah.contains(mataKuliahEdit)) {
-      mataKuliah = mataKuliahEdit;
+      final jam = data['waktuDeadline'] ?? data['jamDeadline'];
+      if (jam != null) {
+        waktuDeadline = _parseWaktu(jam);
+      }
     }
 
-    status = data['status'] ?? 'Belum Dikerjakan';
+    _muatMataKuliah();
+  }
 
-    final deadline = data['deadline'];
-    if (deadline != null && deadline.isNotEmpty) {
-      tanggalDeadline = _parseTanggal(deadline);
-    }
+  Future<void> _muatMataKuliah() async {
+    try {
+      final hasil = await _db.getCourses();
 
-    // Jika data sudah memiliki jam, muat jam tersebut.
-    // Mendukung format HH:mm, misalnya 14:30.
-    final jam = data['waktuDeadline'] ?? data['jamDeadline'];
-    if (jam != null) {
-      waktuDeadline = _parseWaktu(jam);
+      if (!mounted) return;
+
+      setState(() {
+        daftarMataKuliah = hasil;
+        sedangMemuatMataKuliah = false;
+        pesanErrorMataKuliah = null;
+
+        // Pastikan mata kuliah yang dipilih masih ada di database.
+        final tersedia = daftarMataKuliah.any(
+          (item) =>
+              '${item['course_name']}'.trim() ==
+              (mataKuliah ?? '').trim(),
+        );
+
+        if (!tersedia) {
+          mataKuliah = null;
+        }
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        sedangMemuatMataKuliah = false;
+        pesanErrorMataKuliah =
+            'Gagal memuat mata kuliah. Silakan coba lagi.';
+      });
     }
   }
 
@@ -77,6 +102,17 @@ class _TambahTugasScreenState
 
   @override
   Widget build(BuildContext context) {
+    final pilihanMataKuliah = daftarMataKuliah
+        .map((item) => '${item['course_name']}'.trim())
+        .where((nama) => nama.isNotEmpty)
+        .toSet()
+        .toList();
+
+    final mataKuliahTerpilih =
+        pilihanMataKuliah.contains(mataKuliah)
+            ? mataKuliah
+            : null;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFD),
       appBar: AppBar(
@@ -87,6 +123,7 @@ class _TambahTugasScreenState
           ),
         ),
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black87,
         elevation: 0,
       ),
       body: SafeArea(
@@ -109,31 +146,79 @@ class _TambahTugasScreenState
               const SizedBox(height: 20),
               _label('Mata Kuliah'),
               const SizedBox(height: 8),
+
               DropdownButtonFormField<String>(
                 isExpanded: true,
-                initialValue: daftarMataKuliah
-                        .contains(mataKuliah)
-                    ? mataKuliah
-                    : null,
+                initialValue: mataKuliahTerpilih,
                 decoration: _inputDecoration(
                   'Pilih mata kuliah',
                   Icons.menu_book_outlined,
                 ),
-                items: daftarMataKuliah.map((item) {
+                items: pilihanMataKuliah.map((nama) {
                   return DropdownMenuItem<String>(
-                    value: item,
+                    value: nama,
                     child: Text(
-                      item,
+                      nama,
                       overflow: TextOverflow.ellipsis,
                     ),
                   );
                 }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    mataKuliah = value;
-                  });
-                },
+                onChanged:
+                    sedangMemuatMataKuliah ||
+                            pesanErrorMataKuliah != null
+                        ? null
+                        : (value) {
+                            setState(() {
+                              mataKuliah = value;
+                            });
+                          },
               ),
+
+              if (sedangMemuatMataKuliah) ...[
+                const SizedBox(height: 8),
+                const Text(
+                  'Memuat daftar mata kuliah...',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+
+              if (pesanErrorMataKuliah != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  pesanErrorMataKuliah!,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      sedangMemuatMataKuliah = true;
+                    });
+                    _muatMataKuliah();
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Coba lagi'),
+                ),
+              ],
+
+              if (!sedangMemuatMataKuliah &&
+                  pesanErrorMataKuliah == null &&
+                  pilihanMataKuliah.isEmpty) ...[
+                const SizedBox(height: 8),
+                const Text(
+                  'Belum ada mata kuliah. Tambahkan mata kuliah '
+                  'terlebih dahulu.',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
 
               const SizedBox(height: 20),
               _label('Deskripsi'),
@@ -201,20 +286,32 @@ class _TambahTugasScreenState
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton.icon(
-                  onPressed: _simpanTugas,
-                  icon: const Icon(Icons.save_outlined),
+                  onPressed: sedangMenyimpan
+                      ? null
+                      : _simpanTugas,
+                  icon: sedangMenyimpan
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.save_outlined),
                   label: Text(
-                    sedangEdit
-                        ? 'Simpan Perubahan'
-                        : 'Simpan Tugas',
+                    sedangMenyimpan
+                        ? 'Menyimpan...'
+                        : sedangEdit
+                            ? 'Simpan Perubahan'
+                            : 'Simpan Tugas',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color(0xFF6EA8FE),
+                    backgroundColor: const Color(0xFF6EA8FE),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -401,20 +498,44 @@ class _TambahTugasScreenState
     });
   }
 
-  void _simpanTugas() {
+  Future<void> _simpanTugas() async {
+    if (sedangMemuatMataKuliah) {
+      _pesan('Tunggu sampai daftar mata kuliah selesai dimuat.');
+      return;
+    }
+
+    if (pesanErrorMataKuliah != null) {
+      _pesan('Muat ulang daftar mata kuliah terlebih dahulu.');
+      return;
+    }
+
     if (judulController.text.trim().isEmpty ||
         mataKuliah == null ||
         tanggalDeadline == null ||
         waktuDeadline == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Mohon lengkapi judul, mata kuliah, tanggal, dan waktu deadline.',
-          ),
-        ),
+      _pesan(
+        'Mohon lengkapi judul, mata kuliah, tanggal, '
+        'dan waktu deadline.',
       );
       return;
     }
+
+    // Pastikan nama mata kuliah masih ada di database.
+    final tersedia = daftarMataKuliah.any(
+      (item) =>
+          '${item['course_name']}'.trim() == mataKuliah,
+    );
+
+    if (!tersedia) {
+      _pesan(
+        'Mata kuliah tidak ditemukan. Silakan pilih ulang.',
+      );
+      return;
+    }
+
+    setState(() {
+      sedangMenyimpan = true;
+    });
 
     final tanggal = '${tanggalDeadline!.day} '
         '${_namaBulan(tanggalDeadline!.month)} '
@@ -423,6 +544,12 @@ class _TambahTugasScreenState
     final jam =
         '${waktuDeadline!.hour.toString().padLeft(2, '0')}:'
         '${waktuDeadline!.minute.toString().padLeft(2, '0')}';
+
+    if (!mounted) return;
+
+    setState(() {
+      sedangMenyimpan = false;
+    });
 
     Navigator.pop(
       context,
@@ -437,10 +564,15 @@ class _TambahTugasScreenState
     );
   }
 
+  void _pesan(String pesan) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(pesan)),
+    );
+  }
+
   DateTime? _parseTanggal(String tanggal) {
     try {
       final bagian = tanggal.split(' ');
-
       if (bagian.length != 3) return null;
 
       final hari = int.parse(bagian[0]);
@@ -489,8 +621,10 @@ class _TambahTugasScreenState
       final jam = int.parse(bagian[0]);
       final menit = int.parse(bagian[1]);
 
-      if (jam < 0 || jam > 23 ||
-          menit < 0 || menit > 59) {
+      if (jam < 0 ||
+          jam > 23 ||
+          menit < 0 ||
+          menit > 59) {
         return null;
       }
 

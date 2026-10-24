@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../database/database_helper.dart';
@@ -14,9 +13,15 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  static const Color biru = Color(0xFF3478F6);
-  static const Color latar = Color(0xFFF5F8FF);
-  static const Color teks = Color(0xFF202B45);
+  // Palet warna soft blue dan soft pink
+  static const Color biru = Color(0xFF8DBBFA);
+  static const Color latar = Color(0xFFF4F8FF);
+  static const Color teks = Color(0xFF40516F);
+  static const Color softBlue = Color(0xFFEAF4FF);
+  static const Color softPink = Color(0xFFFFEAF2);
+  static const Color softBlueDark = Color(0xFF719FD9);
+  static const Color softPinkDark = Color(0xFFE99BB9);
+  static const Color softLavender = Color(0xFFE8E3FF);
 
   final DatabaseHelper _db = DatabaseHelper.instance;
 
@@ -152,21 +157,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // HEADER
               Row(
                 children: [
                   Container(
-                    width: 46,
-                    height: 46,
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [
-                          Color(0xFF70B5FF),
-                          Color(0xFF3478F6),
+                          Color(0xFFB9DCFF),
+                          Color(0xFF8DBBFA),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: softBlueDark.withValues(alpha: 0.18),
+                          blurRadius: 12,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
                     ),
                     child: const Icon(
                       Icons.menu_book_rounded,
@@ -191,7 +204,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           'Teman belajar setiap hari',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xFF8590A5),
+                            color: Color(0xFF8796B0),
                           ),
                         ),
                       ],
@@ -200,10 +213,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: biru.withValues(alpha: 0.07),
+                          color: biru.withValues(alpha: 0.12),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -215,7 +228,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       icon: const Icon(
                         Icons.notifications_none_rounded,
-                        color: teks,
+                        color: softBlueDark,
                       ),
                       tooltip: 'Lihat tugas dan deadline',
                     ),
@@ -223,8 +236,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 30),
 
+              // SAPAAN
               const Text(
                 'Halo, Tika Afrilia 👋',
                 style: TextStyle(
@@ -239,29 +253,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'Siap menjalani hari yang produktif?',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF7D899F),
+                  color: Color(0xFF8291AA),
                 ),
               ),
 
-              const SizedBox(height: 23),
+              const SizedBox(height: 24),
 
+              // BANNER MOTIVASI
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(21),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [
-                      Color(0xFF5DA7FF),
-                      Color(0xFF3478F6),
-                      Color(0xFF4262DF),
+                      Color(0xFFAED4FF),
+                      Color(0xFF9FC8FA),
+                      Color(0xFFDCD6FF),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(25),
                   boxShadow: [
                     BoxShadow(
-                      color: biru.withValues(alpha: 0.22),
+                      color: softBlueDark.withValues(alpha: 0.20),
                       blurRadius: 18,
                       offset: const Offset(0, 8),
                     ),
@@ -279,7 +294,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               fontSize: 20,
                               height: 1.3,
                               fontWeight: FontWeight.w800,
-                              color: Colors.white,
+                              color: teks,
                             ),
                           ),
                           SizedBox(height: 9),
@@ -287,7 +302,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'Atur waktumu dan raih targetmu.',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.white,
+                              color: teks,
                             ),
                           ),
                         ],
@@ -298,7 +313,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       width: 68,
                       height: 68,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.17),
+                        color: Colors.white.withValues(alpha: 0.40),
                         borderRadius: BorderRadius.circular(22),
                       ),
                       child: const Icon(
@@ -311,8 +326,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
 
-              const SizedBox(height: 27),
+              const SizedBox(height: 28),
 
+              // RINGKASAN AKADEMIK
               const Text(
                 'Ringkasan Akademik',
                 style: TextStyle(
@@ -326,10 +342,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'Pantau aktivitas kuliahmu di sini.',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Color(0xFF8590A5),
+                  color: Color(0xFF8796B0),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 17),
 
               Row(
                 children: [
@@ -341,9 +357,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: 'Mata Kuliah',
                       icon: Icons.menu_book_rounded,
                       gradient: const [
-                        Color(0xFF65B4FF),
-                        Color(0xFF3478F6),
+                        Color(0xFFB9DCFF),
+                        Color(0xFF8DBBFA),
                       ],
+                      iconColor: softBlueDark,
                       onTap: () => _bukaHalaman(
                         const MataKuliahScreen(),
                       ),
@@ -358,9 +375,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: 'Tugas Aktif',
                       icon: Icons.assignment_rounded,
                       gradient: const [
-                        Color(0xFFFFA9C1),
-                        Color(0xFFEF78A0),
+                        Color(0xFFFFDCE9),
+                        Color(0xFFF4B6CD),
                       ],
+                      iconColor: softPinkDark,
                       onTap: () => _bukaHalaman(
                         const TugasScreen(),
                       ),
@@ -369,20 +387,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 13),
 
+              // KARTU DEADLINE
               InkWell(
                 onTap: () => _bukaHalaman(
                   const TugasScreen(),
                 ),
-                borderRadius: BorderRadius.circular(21),
+                borderRadius: BorderRadius.circular(22),
                 child: Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF5E4),
-                    borderRadius: BorderRadius.circular(21),
+                    color: softBlue,
+                    borderRadius: BorderRadius.circular(22),
                     border: Border.all(
-                      color: const Color(0xFFFFE8B9),
+                      color: const Color(0xFFD5E7FF),
                     ),
                   ),
                   child: Row(
@@ -391,12 +410,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         width: 49,
                         height: 49,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFE7B3),
-                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
                         ),
                         child: const Icon(
                           Icons.notifications_active_rounded,
-                          color: Color(0xFFD99420),
+                          color: softBlueDark,
                           size: 27,
                         ),
                       ),
@@ -417,7 +436,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Text(
                               'Tugas yang tenggatnya belum lewat',
                               style: TextStyle(
-                                color: Color(0xFF99886A),
+                                color: Color(0xFF8291AA),
                                 fontSize: 12,
                               ),
                             ),
@@ -427,7 +446,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Text(
                         sedangMemuat ? '…' : '$jumlahDeadline',
                         style: const TextStyle(
-                          color: Color(0xFFD99420),
+                          color: softBlueDark,
                           fontWeight: FontWeight.w800,
                           fontSize: 27,
                         ),
@@ -437,8 +456,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 29),
 
+              // MENU UTAMA
               Row(
                 children: [
                   const Expanded(
@@ -455,13 +475,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     'Pilih menu',
                     style: TextStyle(
                       fontSize: 12,
-                      color: biru,
+                      color: softBlueDark,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 16),
 
               Row(
                 children: [
@@ -469,32 +489,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: _menuTile(
                       icon: Icons.calendar_month_rounded,
                       title: 'Jadwal',
-                      color: const Color(0xFFE6F1FF),
-                      iconColor: const Color(0xFF3478F6),
+                      color: softBlue,
+                      iconColor: softBlueDark,
                       onTap: () => _bukaHalaman(
                         const JadwalScreen(),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 11),
                   Expanded(
                     child: _menuTile(
                       icon: Icons.assignment_rounded,
                       title: 'Tugas',
-                      color: const Color(0xFFFFEAF0),
-                      iconColor: const Color(0xFFE66F97),
+                      color: softPink,
+                      iconColor: softPinkDark,
                       onTap: () => _bukaHalaman(
                         const TugasScreen(),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 11),
                   Expanded(
                     child: _menuTile(
                       icon: Icons.menu_book_rounded,
                       title: 'Mata Kuliah',
-                      color: const Color(0xFFE5F7EC),
-                      iconColor: const Color(0xFF4CA878),
+                      color: softLavender,
+                      iconColor: const Color(0xFF9388D6),
                       onTap: () => _bukaHalaman(
                         const MataKuliahScreen(),
                       ),
@@ -503,8 +523,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 29),
 
+              // AKTIVITAS HARI INI
               const Text(
                 'Aktivitas Hari Ini',
                 style: TextStyle(
@@ -518,34 +539,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'Tetap semangat menjalani kegiatanmu.',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Color(0xFF8590A5),
+                  color: Color(0xFF8796B0),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 16),
 
               _activityCard(
                 icon: Icons.school_rounded,
                 title: 'Kegiatan Perkuliahan',
                 subtitle: 'Periksa jadwal kuliahmu',
-                color: const Color(0xFFE6F1FF),
-                iconColor: const Color(0xFF3478F6),
+                color: softBlue,
+                iconColor: softBlueDark,
                 onTap: () => _bukaHalaman(
                   const JadwalScreen(),
                 ),
               ),
-              const SizedBox(height: 11),
+              const SizedBox(height: 12),
               _activityCard(
                 icon: Icons.edit_note_rounded,
                 title: 'Penyelesaian Tugas',
                 subtitle: 'Periksa tugas yang masih aktif',
-                color: const Color(0xFFFFEAF0),
-                iconColor: const Color(0xFFE66F97),
+                color: softPink,
+                iconColor: softPinkDark,
                 onTap: () => _bukaHalaman(
                   const TugasScreen(),
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 25),
 
               Center(
                 child: Text(
@@ -564,11 +585,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // KARTU RINGKASAN
   static Widget _summaryCard({
     required String number,
     required String title,
     required IconData icon,
     required List<Color> gradient,
+    required Color iconColor,
     required VoidCallback onTap,
   }) {
     return Material(
@@ -587,7 +610,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(
-                color: gradient.last.withValues(alpha: 0.20),
+                color: gradient.last.withValues(alpha: 0.25),
                 blurRadius: 13,
                 offset: const Offset(0, 6),
               ),
@@ -600,12 +623,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: 43,
                 height: 43,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.22),
+                  color: Colors.white.withValues(alpha: 0.65),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
                   icon,
-                  color: Colors.white,
+                  color: iconColor,
                   size: 25,
                 ),
               ),
@@ -615,7 +638,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: const TextStyle(
                   fontSize: 32,
                   height: 1,
-                  color: Colors.white,
+                  color: teks,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -624,8 +647,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 title,
                 style: const TextStyle(
                   fontSize: 13,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+                  color: teks,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: 7),
@@ -634,7 +657,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const Text(
                     'Lihat detail',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: teks,
                       fontSize: 11,
                     ),
                   ),
@@ -642,7 +665,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Icon(
                     Icons.arrow_forward_rounded,
                     size: 13,
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: teks.withValues(alpha: 0.8),
                   ),
                 ],
               ),
@@ -653,6 +676,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // MENU UTAMA
   static Widget _menuTile({
     required IconData icon,
     required String title,
@@ -662,20 +686,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(19),
+      borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(19),
+        borderRadius: BorderRadius.circular(20),
         child: Container(
           padding: const EdgeInsets.symmetric(
             vertical: 17,
             horizontal: 5,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(19),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: const Color(0xFFEDF1F8),
+              color: const Color(0xFFE5EDF8),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: softBlueDark.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             children: [
@@ -709,6 +740,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // KARTU AKTIVITAS
   static Widget _activityCard({
     required IconData icon,
     required String title,
@@ -719,12 +751,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(19),
+      borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(19),
-        child: Padding(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
           padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: const Color(0xFFE8EEF8),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: softBlueDark.withValues(alpha: 0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
           child: Row(
             children: [
               Container(
@@ -757,7 +802,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Text(
                       subtitle,
                       style: const TextStyle(
-                        color: Color(0xFF8590A5),
+                        color: Color(0xFF8796B0),
                         fontSize: 11,
                       ),
                     ),
@@ -766,7 +811,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const Icon(
                 Icons.chevron_right_rounded,
-                color: Color(0xFF9AA5B8),
+                color: Color(0xFF9AAAC0),
               ),
             ],
           ),

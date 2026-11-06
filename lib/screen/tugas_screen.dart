@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
 import '../services/notification_service.dart';
 import 'tambah_tugas_screen.dart';
+import 'daftar_tugas_status_screen.dart';
 
 const Color _biru = Color(0xFF6EA8FE);
 const Color _biruTua = Color(0xFF3978D4);
@@ -227,8 +228,7 @@ class _TugasScreenState extends State<TugasScreen> {
       final namaMataKuliah = dataBaru['mataKuliah']!.trim();
 
       final mataKuliahAda = daftarMataKuliah.any(
-        (item) =>
-            '${item['course_name']}'.trim() == namaMataKuliah,
+        (item) => '${item['course_name']}'.trim() == namaMataKuliah,
       );
 
       if (!mataKuliahAda) {
@@ -298,8 +298,7 @@ class _TugasScreenState extends State<TugasScreen> {
       final namaMataKuliah = dataBaru['mataKuliah']!.trim();
 
       final mataKuliahAda = daftarMataKuliah.any(
-        (item) =>
-            '${item['course_name']}'.trim() == namaMataKuliah,
+        (item) => '${item['course_name']}'.trim() == namaMataKuliah,
       );
 
       if (!mataKuliahAda) {
@@ -412,6 +411,7 @@ class _TugasScreenState extends State<TugasScreen> {
     );
   }
 
+
   Future<void> _hapusTugas(int index) async {
     if (index < 0 || index >= tugas.length) return;
 
@@ -500,17 +500,14 @@ class _TugasScreenState extends State<TugasScreen> {
   List<Map<String, String>> get _tugasTerfilter {
     return tugas.where((item) {
       final statusSesuai =
-          _filterStatus == 'Semua' ||
-          item['status'] == _filterStatus;
+          _filterStatus == 'Semua' || item['status'] == _filterStatus;
 
       final query = _kataKunci.trim().toLowerCase();
       final judul = (item['judul'] ?? '').toLowerCase();
       final matkul = (item['mataKuliah'] ?? '').toLowerCase();
 
       final kataSesuai =
-          query.isEmpty ||
-          judul.contains(query) ||
-          matkul.contains(query);
+          query.isEmpty || judul.contains(query) || matkul.contains(query);
 
       return statusSesuai && kataSesuai;
     }).toList();
@@ -524,6 +521,17 @@ class _TugasScreenState extends State<TugasScreen> {
 
   int get _jumlahBelum =>
       tugas.where((item) => item['status'] != 'Selesai').length;
+
+  Future<void> _bukaDaftarStatus(String status) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => DaftarTugasStatusScreen(
+          status: status,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -726,6 +734,7 @@ class _TugasScreenState extends State<TugasScreen> {
             icon: Icons.pending_actions_rounded,
             warna: const Color(0xFFE6A34D),
             latar: const Color(0xFFFFF4E5),
+            onTap: () => _bukaDaftarStatus('Belum Dikerjakan'),
           ),
         ),
         const SizedBox(width: 10),
@@ -736,6 +745,7 @@ class _TugasScreenState extends State<TugasScreen> {
             icon: Icons.autorenew_rounded,
             warna: _biruTua,
             latar: _biruMuda,
+            onTap: () => _bukaDaftarStatus('Sedang Dikerjakan'),
           ),
         ),
         const SizedBox(width: 10),
@@ -746,6 +756,7 @@ class _TugasScreenState extends State<TugasScreen> {
             icon: Icons.check_circle_outline_rounded,
             warna: const Color(0xFF36A875),
             latar: const Color(0xFFE7F8EF),
+            onTap: () => _bukaDaftarStatus('Selesai'),
           ),
         ),
       ],
@@ -758,49 +769,60 @@ class _TugasScreenState extends State<TugasScreen> {
     required IconData icon,
     required Color warna,
     required Color latar,
+    required VoidCallback onTap,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 15,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFECF1F8)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 35,
-            height: 35,
-            decoration: BoxDecoration(
-              color: latar,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: warna, size: 20),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 15,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: const Color(0xFFECF1F8),
           ),
-          const SizedBox(height: 12),
-          Text(
-            '$jumlah',
-            style: const TextStyle(
-              color: _teks,
-              fontSize: 23,
-              fontWeight: FontWeight.w800,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 35,
+              height: 35,
+              decoration: BoxDecoration(
+                color: latar,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: warna,
+                size: 20,
+              ),
             ),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            label,
-            maxLines: 2,
-            style: const TextStyle(
-              color: _abu,
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
+            const SizedBox(height: 12),
+            Text(
+              '$jumlah',
+              style: const TextStyle(
+                color: _teks,
+                fontSize: 23,
+                fontWeight: FontWeight.w800,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 3),
+            Text(
+              label,
+              maxLines: 2,
+              style: const TextStyle(
+                color: _abu,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

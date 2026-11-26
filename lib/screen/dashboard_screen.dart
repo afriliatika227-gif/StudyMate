@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../database/database_helper.dart';
@@ -13,15 +14,17 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  // Palet warna soft blue dan soft pink
-  static const Color biru = Color(0xFF8DBBFA);
-  static const Color latar = Color(0xFFF4F8FF);
-  static const Color teks = Color(0xFF40516F);
-  static const Color softBlue = Color(0xFFEAF4FF);
-  static const Color softPink = Color(0xFFFFEAF2);
-  static const Color softBlueDark = Color(0xFF719FD9);
-  static const Color softPinkDark = Color(0xFFE99BB9);
-  static const Color softLavender = Color(0xFFE8E3FF);
+  static const Color biru = Color(0xFF3478C8);
+  static const Color latar = Color(0xFFF5F7FA);
+  static const Color teks = Color(0xFF344054);
+  static const Color muted = Color(0xFF7C8798);
+  static const Color garis = Color(0xFFE4E8EF);
+
+  static const Color softBlue = Color(0xFFEAF2FC);
+  static const Color softPink = Color(0xFFFCECF2);
+  static const Color softMint = Color(0xFFEAF4EF);
+  static const Color softPeach = Color(0xFFFBF1E3);
+  static const Color softLavender = Color(0xFFF0EDFA);
 
   final DatabaseHelper _db = DatabaseHelper.instance;
 
@@ -153,7 +156,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       backgroundColor: latar,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -161,33 +164,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Row(
                 children: [
                   Container(
-                    width: 48,
-                    height: 48,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFFB9DCFF),
-                          Color(0xFF8DBBFA),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: softBlueDark.withValues(alpha: 0.18),
-                          blurRadius: 12,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
+                      color: biru,
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.menu_book_rounded,
                       color: Colors.white,
-                      size: 27,
+                      size: 25,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 11),
                   const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,42 +184,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Text(
                           'StudyMate',
                           style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
                             color: teks,
                           ),
                         ),
+                        SizedBox(height: 2),
                         Text(
-                          'Teman belajar setiap hari',
+                          'Academic Management',
                           style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF8796B0),
+                            fontSize: 11,
+                            color: muted,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: biru.withValues(alpha: 0.12),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: IconButton(
-                      onPressed: () => _bukaHalaman(
-                        const TugasScreen(),
-                      ),
-                      icon: const Icon(
-                        Icons.notifications_none_rounded,
-                        color: softBlueDark,
-                      ),
-                      tooltip: 'Lihat tugas dan deadline',
+                  _iconButton(
+                    icon: Icons.notifications_none_rounded,
+                    onTap: () => _bukaHalaman(
+                      const TugasScreen(),
                     ),
                   ),
                 ],
@@ -240,47 +213,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
               // SAPAAN
               const Text(
-                'Halo, Tika Afrilia 👋',
+                'Selamat Datang,',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: muted,
+                ),
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                'Tika Afrilia',
                 style: TextStyle(
                   fontSize: 25,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                   color: teks,
-                  letterSpacing: -0.5,
+                  letterSpacing: -0.4,
                 ),
               ),
               const SizedBox(height: 7),
               const Text(
-                'Siap menjalani hari yang produktif?',
+                'Kelola kegiatan akademikmu dengan lebih teratur.',
                 style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF8291AA),
+                  fontSize: 12,
+                  color: muted,
+                  height: 1.5,
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 23),
 
-              // BANNER MOTIVASI
+              // BANNER BIRU SOLID
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(21),
+                padding: const EdgeInsets.all(19),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFFAED4FF),
-                      Color(0xFF9FC8FA),
-                      Color(0xFFDCD6FF),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: softBlueDark.withValues(alpha: 0.20),
-                      blurRadius: 18,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
+                  color: biru,
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 child: Row(
                   children: [
@@ -289,37 +256,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Langkah kecil,\nhasil luar biasa ✨',
+                            'Rencanakan harimu',
                             style: TextStyle(
-                              fontSize: 20,
-                              height: 1.3,
-                              fontWeight: FontWeight.w800,
-                              color: teks,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 9),
+                          SizedBox(height: 7),
                           Text(
-                            'Atur waktumu dan raih targetmu.',
+                            'Atur jadwal dan selesaikan tugas '
+                            'sesuai prioritas.',
                             style: TextStyle(
                               fontSize: 12,
-                              color: teks,
+                              height: 1.5,
+                              color: Colors.white,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 10),
                     Container(
-                      width: 68,
-                      height: 68,
+                      width: 55,
+                      height: 55,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.40),
-                        borderRadius: BorderRadius.circular(22),
+                        color: Colors.white.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(13),
                       ),
                       child: const Icon(
-                        Icons.auto_awesome_rounded,
+                        Icons.calendar_month_rounded,
                         color: Colors.white,
-                        size: 38,
+                        size: 29,
                       ),
                     ),
                   ],
@@ -332,35 +300,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const Text(
                 'Ringkasan Akademik',
                 style: TextStyle(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w800,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
                   color: teks,
                 ),
               ),
               const SizedBox(height: 5),
               const Text(
-                'Pantau aktivitas kuliahmu di sini.',
+                'Informasi aktivitas perkuliahanmu.',
                 style: TextStyle(
-                  fontSize: 13,
-                  color: Color(0xFF8796B0),
+                  fontSize: 12,
+                  color: muted,
                 ),
               ),
-              const SizedBox(height: 17),
+
+              const SizedBox(height: 16),
 
               Row(
                 children: [
                   Expanded(
                     child: _summaryCard(
                       number: sedangMemuat
-                          ? '…'
+                          ? '...'
                           : '$jumlahMataKuliah',
                       title: 'Mata Kuliah',
-                      icon: Icons.menu_book_rounded,
-                      gradient: const [
-                        Color(0xFFB9DCFF),
-                        Color(0xFF8DBBFA),
-                      ],
-                      iconColor: softBlueDark,
+                      icon: Icons.menu_book_outlined,
+                      color: softBlue,
+                      iconColor: biru,
                       onTap: () => _bukaHalaman(
                         const MataKuliahScreen(),
                       ),
@@ -370,15 +336,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Expanded(
                     child: _summaryCard(
                       number: sedangMemuat
-                          ? '…'
+                          ? '...'
                           : '$jumlahTugasAktif',
                       title: 'Tugas Aktif',
-                      icon: Icons.assignment_rounded,
-                      gradient: const [
-                        Color(0xFFFFDCE9),
-                        Color(0xFFF4B6CD),
-                      ],
-                      iconColor: softPinkDark,
+                      icon: Icons.assignment_outlined,
+                      color: softPink,
+                      iconColor: const Color(0xFFD7799E),
                       onTap: () => _bukaHalaman(
                         const TugasScreen(),
                       ),
@@ -387,110 +350,112 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
 
-              const SizedBox(height: 13),
+              const SizedBox(height: 12),
 
-              // KARTU DEADLINE
-              InkWell(
-                onTap: () => _bukaHalaman(
-                  const TugasScreen(),
-                ),
-                borderRadius: BorderRadius.circular(22),
-                child: Container(
-                  padding: const EdgeInsets.all(18),
-                  decoration: BoxDecoration(
-                    color: softBlue,
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(
-                      color: const Color(0xFFD5E7FF),
-                    ),
+              // DEADLINE
+              Material(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                child: InkWell(
+                  onTap: () => _bukaHalaman(
+                    const TugasScreen(),
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 49,
-                        height: 49,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(14),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: garis),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 43,
+                          height: 43,
+                          decoration: BoxDecoration(
+                            color: softPeach,
+                            borderRadius: BorderRadius.circular(11),
+                          ),
+                          child: const Icon(
+                            Icons.event_note_outlined,
+                            color: Color(0xFFC28B43),
+                            size: 23,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.notifications_active_rounded,
-                          color: softBlueDark,
-                          size: 27,
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Deadline Terdekat',
-                              style: TextStyle(
-                                color: teks,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14,
+                        const SizedBox(width: 13),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Deadline Terdekat',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: teks,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Tugas yang tenggatnya belum lewat',
-                              style: TextStyle(
-                                color: Color(0xFF8291AA),
-                                fontSize: 12,
+                              SizedBox(height: 4),
+                              Text(
+                                'Tenggat tugas yang belum lewat',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: muted,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Text(
-                        sedangMemuat ? '…' : '$jumlahDeadline',
-                        style: const TextStyle(
-                          color: softBlueDark,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 27,
+                        Text(
+                          sedangMemuat ? '...' : '$jumlahDeadline',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFFC28B43),
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 5),
+                        const Icon(
+                          Icons.chevron_right_rounded,
+                          color: muted,
+                          size: 20,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 29),
+              const SizedBox(height: 28),
 
               // MENU UTAMA
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Menu Utama',
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w800,
-                        color: teks,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'Pilih menu',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: softBlueDark,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+              const Text(
+                'Menu Utama',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: teks,
+                ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 5),
+              const Text(
+                'Akses fitur utama StudyMate.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: muted,
+                ),
+              ),
+
+              const SizedBox(height: 15),
 
               Row(
                 children: [
                   Expanded(
                     child: _menuTile(
-                      icon: Icons.calendar_month_rounded,
+                      icon: Icons.calendar_month_outlined,
                       title: 'Jadwal',
                       color: softBlue,
-                      iconColor: softBlueDark,
+                      iconColor: biru,
                       onTap: () => _bukaHalaman(
                         const JadwalScreen(),
                       ),
@@ -499,10 +464,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const SizedBox(width: 11),
                   Expanded(
                     child: _menuTile(
-                      icon: Icons.assignment_rounded,
+                      icon: Icons.assignment_outlined,
                       title: 'Tugas',
                       color: softPink,
-                      iconColor: softPinkDark,
+                      iconColor: const Color(0xFFD7799E),
                       onTap: () => _bukaHalaman(
                         const TugasScreen(),
                       ),
@@ -511,10 +476,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const SizedBox(width: 11),
                   Expanded(
                     child: _menuTile(
-                      icon: Icons.menu_book_rounded,
+                      icon: Icons.menu_book_outlined,
                       title: 'Mata Kuliah',
                       color: softLavender,
-                      iconColor: const Color(0xFF9388D6),
+                      iconColor: const Color(0xFF8174BC),
                       onTap: () => _bukaHalaman(
                         const MataKuliahScreen(),
                       ),
@@ -523,62 +488,92 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
 
-              const SizedBox(height: 29),
+              const SizedBox(height: 28),
 
               // AKTIVITAS HARI INI
               const Text(
                 'Aktivitas Hari Ini',
                 style: TextStyle(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w800,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
                   color: teks,
                 ),
               ),
               const SizedBox(height: 5),
               const Text(
-                'Tetap semangat menjalani kegiatanmu.',
+                'Pintasan untuk kegiatan akademik.',
                 style: TextStyle(
-                  fontSize: 13,
-                  color: Color(0xFF8796B0),
+                  fontSize: 12,
+                  color: muted,
                 ),
               ),
-              const SizedBox(height: 16),
+
+              const SizedBox(height: 15),
 
               _activityCard(
-                icon: Icons.school_rounded,
+                icon: Icons.school_outlined,
                 title: 'Kegiatan Perkuliahan',
-                subtitle: 'Periksa jadwal kuliahmu',
-                color: softBlue,
-                iconColor: softBlueDark,
+                subtitle: 'Periksa jadwal kuliah',
+                color: softMint,
+                iconColor: const Color(0xFF4D9875),
                 onTap: () => _bukaHalaman(
                   const JadwalScreen(),
                 ),
               ),
-              const SizedBox(height: 12),
+
+              const SizedBox(height: 10),
+
               _activityCard(
                 icon: Icons.edit_note_rounded,
                 title: 'Penyelesaian Tugas',
                 subtitle: 'Periksa tugas yang masih aktif',
                 color: softPink,
-                iconColor: softPinkDark,
+                iconColor: const Color(0xFFD7799E),
                 onTap: () => _bukaHalaman(
                   const TugasScreen(),
                 ),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 26),
 
               Center(
                 child: Text(
-                  'StudyMate • Teman belajar setiap hari 💙',
-                  textAlign: TextAlign.center,
+                  'StudyMate  •  Academic Management',
                   style: TextStyle(
-                    color: Colors.blueGrey.shade300,
-                    fontSize: 11,
+                    color: Colors.blueGrey.shade400,
+                    fontSize: 10,
                   ),
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // TOMBOL IKON HEADER
+  static Widget _iconButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: garis),
+          ),
+          child: Icon(
+            icon,
+            color: teks,
+            size: 22,
           ),
         ),
       ),
@@ -590,82 +585,73 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String number,
     required String title,
     required IconData icon,
-    required List<Color> gradient,
+    required Color color,
     required Color iconColor,
     required VoidCallback onTap,
   }) {
     return Material(
-      color: Colors.transparent,
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(22),
-        child: Ink(
-          padding: const EdgeInsets.all(17),
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: gradient,
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(22),
-            boxShadow: [
-              BoxShadow(
-                color: gradient.last.withValues(alpha: 0.25),
-                blurRadius: 13,
-                offset: const Offset(0, 6),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: garis),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 43,
-                height: 43,
+                width: 39,
+                height: 39,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.65),
-                  borderRadius: BorderRadius.circular(14),
+                  color: color,
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
                   icon,
                   color: iconColor,
-                  size: 25,
+                  size: 22,
                 ),
               ),
-              const SizedBox(height: 17),
+              const SizedBox(height: 15),
               Text(
                 number,
                 style: const TextStyle(
-                  fontSize: 32,
+                  fontSize: 29,
                   height: 1,
+                  fontWeight: FontWeight.w600,
                   color: teks,
-                  fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(height: 9),
+              const SizedBox(height: 8),
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 13,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                   color: teks,
-                  fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 7),
+              const SizedBox(height: 9),
               Row(
                 children: [
-                  const Text(
+                  Text(
                     'Lihat detail',
                     style: TextStyle(
-                      color: teks,
                       fontSize: 11,
+                      color: iconColor,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(width: 4),
                   Icon(
                     Icons.arrow_forward_rounded,
                     size: 13,
-                    color: teks.withValues(alpha: 0.8),
+                    color: iconColor,
                   ),
                 ],
               ),
@@ -686,41 +672,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(14),
         child: Container(
           padding: const EdgeInsets.symmetric(
             vertical: 17,
-            horizontal: 5,
+            horizontal: 4,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: const Color(0xFFE5EDF8),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: softBlueDark.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: garis),
           ),
           child: Column(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 43,
+                height: 43,
                 decoration: BoxDecoration(
                   color: color,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(11),
                 ),
                 child: Icon(
                   icon,
                   color: iconColor,
-                  size: 26,
+                  size: 23,
                 ),
               ),
               const SizedBox(height: 10),
@@ -730,7 +707,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: const TextStyle(
                   color: teks,
                   fontSize: 11,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -751,38 +728,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(14),
         child: Container(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: const Color(0xFFE8EEF8),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: softBlueDark.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: garis),
           ),
           child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 43,
+                height: 43,
                 decoration: BoxDecoration(
                   color: color,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(11),
                 ),
                 child: Icon(
                   icon,
                   color: iconColor,
-                  size: 25,
+                  size: 23,
                 ),
               ),
               const SizedBox(width: 13),
@@ -795,14 +763,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       style: const TextStyle(
                         color: teks,
                         fontSize: 13,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 4),
                     Text(
                       subtitle,
                       style: const TextStyle(
-                        color: Color(0xFF8796B0),
+                        color: muted,
                         fontSize: 11,
                       ),
                     ),
@@ -811,7 +779,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const Icon(
                 Icons.chevron_right_rounded,
-                color: Color(0xFF9AAAC0),
+                color: muted,
+                size: 21,
               ),
             ],
           ),

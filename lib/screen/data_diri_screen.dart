@@ -6,10 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const Color pastelBackground = Color(0xFFF7F6FF);
-const Color pastelLavender = Color(0xFF8B8FE8);
-const Color pastelDark = Color(0xFF414778);
-const Color pastelMuted = Color(0xFF8587A5);
+const Color _biru = Color(0xFF3478C8);
+const Color _biruTua = Color(0xFF344054);
+const Color _background = Color(0xFFF5F7FA);
+const Color _line = Color(0xFFE4E8EF);
+const Color _abu = Color(0xFF7C8798);
+const Color _lavender = Color(0xFF8870CE);
+
+const List<String> _semesterOptions = [
+  'Semester 1',
+  'Semester 2',
+  'Semester 3',
+  'Semester 4',
+  'Semester 5',
+  'Semester 6',
+  'Semester 7',
+  'Semester 8',
+];
 
 class DataDiriScreen extends StatefulWidget {
   const DataDiriScreen({super.key});
@@ -40,6 +53,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
       final fotoBase64 = prefs.getString('profile_foto');
 
       Uint8List? foto;
+
       if (fotoBase64 != null && fotoBase64.isNotEmpty) {
         try {
           foto = base64Decode(fotoBase64);
@@ -85,14 +99,15 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
     final prefs = await SharedPreferences.getInstance();
 
     final berhasil = await prefs.setString('profile_nama', namaBaru);
-    if (!berhasil) throw Exception('Gagal menyimpan nama.');
+    if (!berhasil) {
+      throw Exception('Gagal menyimpan nama.');
+    }
 
     await prefs.setString('profile_npm', npmBaru);
     await prefs.setString('profile_program_studi', programStudiBaru);
     await prefs.setString('profile_semester', semesterBaru);
     await prefs.setString('profile_email', emailBaru);
 
-    // Foto lama tetap dipertahankan jika tidak memilih foto baru.
     if (fotoBaru != null) {
       await prefs.setString(
         'profile_foto',
@@ -149,7 +164,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Data diri berhasil disimpan.'),
-          backgroundColor: Color(0xFF65A895),
+          backgroundColor: Color(0xFF36A875),
         ),
       );
     } catch (_) {
@@ -157,7 +172,9 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Data gagal disimpan. Silakan coba kembali.'),
+          content: Text(
+            'Data gagal disimpan. Silakan coba kembali.',
+          ),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -168,112 +185,131 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return const Scaffold(
-        backgroundColor: pastelBackground,
+        backgroundColor: _background,
         body: Center(
-          child: CircularProgressIndicator(
-            color: pastelLavender,
-          ),
+          child: CircularProgressIndicator(color: _biru),
         ),
       );
     }
 
     return Scaffold(
-      backgroundColor: pastelBackground,
+      backgroundColor: _background,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: true,
         title: const Text(
           'Data Diri',
           style: TextStyle(
-            color: pastelDark,
-            fontWeight: FontWeight.bold,
+            color: _biruTua,
+            fontWeight: FontWeight.w600,
+            fontSize: 19,
           ),
         ),
-        centerTitle: true,
-        backgroundColor: pastelBackground,
-        foregroundColor: pastelDark,
-        elevation: 0,
-        scrolledUnderElevation: 0,
+        iconTheme: const IconThemeData(color: _biruTua),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(
+            height: 1,
+            thickness: 1,
+            color: _line,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
+        padding: const EdgeInsets.fromLTRB(18, 20, 18, 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildProfileHeader(),
-            const SizedBox(height: 28),
+
+            const SizedBox(height: 25),
+
             const Text(
               'Informasi Pribadi',
               style: TextStyle(
-                color: pastelDark,
-                fontSize: 19,
-                fontWeight: FontWeight.bold,
+                color: _biruTua,
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 6),
+
+            const SizedBox(height: 5),
+
             const Text(
               'Berikut adalah informasi data dirimu.',
               style: TextStyle(
-                color: pastelMuted,
-                fontSize: 13,
+                color: _abu,
+                fontSize: 12,
               ),
             ),
-            const SizedBox(height: 18),
+
+            const SizedBox(height: 16),
+
             _buildInfoCard(
               icon: Icons.person_outline_rounded,
               title: 'Nama Lengkap',
               value: nama,
-              iconColor: const Color(0xFF8988E8),
-              iconBackground: const Color(0xFFECEBFF),
+              iconColor: _biru,
+              iconBackground: const Color(0xFFEAF2FC),
             ),
+
             _buildInfoCard(
               icon: Icons.badge_outlined,
               title: 'NPM',
               value: npm,
-              iconColor: const Color(0xFF639DDC),
-              iconBackground: const Color(0xFFE5F2FF),
+              iconColor: const Color(0xFF8870CE),
+              iconBackground: const Color(0xFFF0ECFC),
             ),
+
             _buildInfoCard(
               icon: Icons.school_outlined,
               title: 'Program Studi',
               value: programStudi,
-              iconColor: const Color(0xFF9A83D5),
-              iconBackground: const Color(0xFFF0E9FF),
+              iconColor: const Color(0xFF36A875),
+              iconBackground: const Color(0xFFE7F6EF),
             ),
+
             _buildInfoCard(
-              icon: Icons.menu_book_rounded,
+              icon: Icons.menu_book_outlined,
               title: 'Semester',
               value: semester,
-              iconColor: const Color(0xFF5BABB0),
-              iconBackground: const Color(0xFFE3F7F5),
+              iconColor: const Color(0xFFE39A42),
+              iconBackground: const Color(0xFFFFF3E5),
             ),
+
             _buildInfoCard(
               icon: Icons.email_outlined,
               title: 'Email',
               value: email,
-              iconColor: const Color(0xFFE09AB6),
-              iconBackground: const Color(0xFFFFEDF4),
+              iconColor: const Color(0xFFD7799E),
+              iconBackground: const Color(0xFFFCECF2),
             ),
+
             const SizedBox(height: 12),
+
             SizedBox(
-              height: 54,
+              height: 50,
               child: ElevatedButton.icon(
                 onPressed: _bukaEditDataDiri,
                 icon: const Icon(
-                  Icons.edit_rounded,
+                  Icons.edit_outlined,
                   size: 19,
                 ),
                 label: const Text(
                   'Edit Data Diri',
                   style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: pastelLavender,
+                  backgroundColor: _biru,
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
@@ -288,97 +324,88 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 20,
-        vertical: 28,
+        vertical: 24,
       ),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFFE9E8FF),
-            Color(0xFFE5F2FF),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(28),
+        color: const Color(0xFFEAF2FC),
+        borderRadius: BorderRadius.circular(17),
         border: Border.all(
-          color: Colors.white,
-          width: 2,
+          color: const Color(0xFFD8E7F8),
         ),
       ),
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(4),
+            decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: pastelLavender.withValues(alpha: 0.20),
-                  blurRadius: 18,
-                  offset: const Offset(0, 7),
-                ),
-              ],
             ),
             child: CircleAvatar(
-              radius: 51,
-              backgroundColor: const Color(0xFFDCDFFF),
+              radius: 48,
+              backgroundColor: const Color(0xFFDCEBFC),
               backgroundImage:
                   fotoProfil != null ? MemoryImage(fotoProfil!) : null,
               child: fotoProfil == null
                   ? const Icon(
                       Icons.person_rounded,
-                      size: 55,
-                      color: pastelLavender,
+                      size: 52,
+                      color: _biru,
                     )
                   : null,
             ),
           ),
-          const SizedBox(height: 18),
+
+          const SizedBox(height: 16),
+
           Text(
             nama,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: pastelDark,
+              fontSize: 21,
+              fontWeight: FontWeight.w600,
+              color: _biruTua,
             ),
           ),
+
           const SizedBox(height: 10),
+
           Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 7,
+              horizontal: 13,
+              vertical: 6,
             ),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(30),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(7),
             ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  Icons.school_rounded,
-                  size: 16,
-                  color: pastelLavender,
+                  Icons.school_outlined,
+                  size: 15,
+                  color: _biru,
                 ),
                 SizedBox(width: 6),
                 Text(
                   'Mahasiswa',
                   style: TextStyle(
-                    color: pastelDark,
+                    color: _biru,
                     fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    fontSize: 12,
                   ),
                 ),
               ],
             ),
           ),
+
           const SizedBox(height: 12),
+
           Text(
             npm,
             style: const TextStyle(
-              color: pastelDark,
+              color: _biruTua,
               fontSize: 13,
               letterSpacing: 1,
             ),
@@ -396,38 +423,31 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
     required Color iconBackground,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(15),
+      margin: const EdgeInsets.only(bottom: 11),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xFFECEBFA),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF7775B8).withValues(alpha: 0.05),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(color: _line),
       ),
       child: Row(
         children: [
           Container(
-            width: 47,
-            height: 47,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: iconBackground,
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               icon,
               color: iconColor,
-              size: 23,
+              size: 22,
             ),
           ),
-          const SizedBox(width: 14),
+
+          const SizedBox(width: 13),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,7 +455,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
                 Text(
                   title,
                   style: const TextStyle(
-                    color: pastelMuted,
+                    color: _abu,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -444,7 +464,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
                 Text(
                   value,
                   style: const TextStyle(
-                    color: pastelDark,
+                    color: _biruTua,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -525,6 +545,7 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
 
     try {
       final picker = ImagePicker();
+
       final XFile? foto = await picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 70,
@@ -598,28 +619,33 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
   ) {
     return InputDecoration(
       labelText: label,
+      labelStyle: const TextStyle(
+        color: _abu,
+        fontSize: 13,
+      ),
       prefixIcon: Icon(
         icon,
-        color: const Color(0xFFABAFEE),
+        color: _biru,
+        size: 21,
       ),
       filled: true,
       fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 15,
+      ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(
-          color: Color(0xFFE6E4F8),
-        ),
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: _line),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(
-          color: Color(0xFFE6E4F8),
-        ),
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: _line),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(
-          color: pastelLavender,
+          color: _biru,
           width: 1.5,
         ),
       ),
@@ -629,108 +655,130 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: pastelBackground,
+      backgroundColor: _background,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: true,
         title: const Text(
           'Edit Data Diri',
           style: TextStyle(
-            color: pastelDark,
-            fontWeight: FontWeight.bold,
+            color: _biruTua,
+            fontWeight: FontWeight.w600,
+            fontSize: 19,
           ),
         ),
-        centerTitle: true,
-        backgroundColor: pastelBackground,
-        foregroundColor: pastelDark,
-        elevation: 0,
+        iconTheme: const IconThemeData(color: _biruTua),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(
+            height: 1,
+            thickness: 1,
+            color: _line,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(18, 22, 18, 30),
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: pastelLavender.withValues(alpha: 0.15),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
               ),
               child: CircleAvatar(
-                radius: 55,
-                backgroundColor: const Color(0xFFE9E8FF),
+                radius: 52,
+                backgroundColor: const Color(0xFFEAF2FC),
                 backgroundImage: fotoSementara != null
                     ? MemoryImage(fotoSementara!)
                     : null,
                 child: fotoSementara == null
                     ? const Icon(
                         Icons.person_rounded,
-                        size: 58,
-                        color: pastelLavender,
+                        size: 56,
+                        color: _biru,
                       )
                     : null,
               ),
             ),
+
             const SizedBox(height: 10),
+
             TextButton.icon(
               onPressed: sedangMemilihFoto ? null : _pilihFoto,
               icon: sedangMemilihFoto
                   ? const SizedBox(
-                      width: 18,
-                      height: 18,
+                      width: 17,
+                      height: 17,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
+                        color: _biru,
                       ),
                     )
-                  : const Icon(Icons.camera_alt_outlined),
+                  : const Icon(
+                      Icons.camera_alt_outlined,
+                      size: 18,
+                    ),
               label: Text(
                 sedangMemilihFoto
                     ? 'Memuat Foto...'
                     : 'Ubah Foto Profil',
               ),
               style: TextButton.styleFrom(
-                foregroundColor: pastelLavender,
+                foregroundColor: _biru,
               ),
             ),
-            const SizedBox(height: 22),
+
+            const SizedBox(height: 18),
+
             Container(
-              padding: const EdgeInsets.all(18),
+              width: double.infinity,
+              padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: const Color(0xFFEDEBFF),
-                borderRadius: BorderRadius.circular(22),
+                color: const Color(0xFFEAF2FC),
+                borderRadius: BorderRadius.circular(13),
+                border: Border.all(
+                  color: const Color(0xFFD8E7F8),
+                ),
               ),
               child: const Row(
                 children: [
                   Icon(
                     Icons.edit_note_rounded,
-                    color: pastelLavender,
+                    color: _biru,
+                    size: 22,
                   ),
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'Perbarui informasi pribadimu di bawah ini.',
+                      'Perbarui informasi pribadimu melalui formulir berikut.',
                       style: TextStyle(
-                        color: pastelDark,
-                        fontSize: 13,
+                        color: _biruTua,
+                        fontSize: 12,
+                        height: 1.5,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+
             const SizedBox(height: 22),
+
             TextField(
               controller: namaController,
+              textCapitalization: TextCapitalization.words,
               decoration: _inputDecoration(
                 'Nama Lengkap',
                 Icons.person_outline,
               ),
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 14),
+
             TextField(
               controller: npmController,
               keyboardType: TextInputType.number,
@@ -739,7 +787,9 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                 Icons.badge_outlined,
               ),
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 14),
+
             TextField(
               controller: prodiController,
               decoration: _inputDecoration(
@@ -747,9 +797,11 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                 Icons.school_outlined,
               ),
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 14),
+
             DropdownButtonFormField<String>(
-              initialValue: semesterOptions.contains(semester)
+              initialValue: _semesterOptions.contains(semester)
                   ? semester
                   : 'Semester 5',
               decoration: _inputDecoration(
@@ -757,12 +809,18 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                 Icons.menu_book_outlined,
               ),
               dropdownColor: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              items: semesterOptions
+              borderRadius: BorderRadius.circular(12),
+              items: _semesterOptions
                   .map(
                     (item) => DropdownMenuItem<String>(
                       value: item,
-                      child: Text(item),
+                      child: Text(
+                        item,
+                        style: const TextStyle(
+                          color: _biruTua,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
                   )
                   .toList(),
@@ -772,7 +830,9 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                 }
               },
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 14),
+
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
@@ -781,47 +841,58 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                 Icons.email_outlined,
               ),
             ),
-            const SizedBox(height: 28),
+
+            const SizedBox(height: 25),
+
             SizedBox(
               width: double.infinity,
-              height: 54,
+              height: 50,
               child: ElevatedButton.icon(
                 onPressed:
                     sedangMemilihFoto ? null : _simpanPerubahan,
-                icon: const Icon(Icons.save_outlined),
+                icon: const Icon(
+                  Icons.save_outlined,
+                  size: 19,
+                ),
                 label: const Text(
                   'Simpan Perubahan',
                   style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: pastelLavender,
+                  backgroundColor: _biru,
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(17),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+
+            const SizedBox(height: 11),
+
             SizedBox(
               width: double.infinity,
-              height: 52,
+              height: 48,
               child: OutlinedButton(
                 onPressed: () => Navigator.pop(context),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: pastelDark,
-                  side: const BorderSide(
-                    color: Color(0xFFDCD9F5),
-                  ),
+                  foregroundColor: _biruTua,
+                  side: const BorderSide(color: _line),
+                  backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(17),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text('Batal'),
+                child: const Text(
+                  'Batal',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ],
@@ -830,14 +901,3 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
     );
   }
 }
-
-const List<String> semesterOptions = [
-  'Semester 1',
-  'Semester 2',
-  'Semester 3',
-  'Semester 4',
-  'Semester 5',
-  'Semester 6',
-  'Semester 7',
-  'Semester 8',
-];

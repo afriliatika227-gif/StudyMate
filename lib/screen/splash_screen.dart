@@ -14,22 +14,19 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late final AnimationController _logoController;
-  late final AnimationController _textController;
-  late final AnimationController _floatController;
+  late final AnimationController _contentController;
   late final AnimationController _loadingController;
 
   late final Animation<double> _logoScale;
-  late final Animation<double> _textFade;
-  late final Animation<Offset> _textSlide;
-  late final Animation<double> _floatAnimation;
+  late final Animation<double> _contentFade;
+  late final Animation<Offset> _contentSlide;
   late final Animation<double> _loadingFade;
 
   Timer? _navigationTimer;
 
-  static const Color warnaBiru = Color(0xFF6EA8FE);
-  static const Color biruMuda = Color(0xFFDCEBFF);
-  static const Color pinkMuda = Color(0xFFFFE1EF);
-  static const Color kuningLampu = Color(0xFFFFC96B);
+  static const Color biru = Color(0xFF82B4F5);
+  static const Color teks = Color(0xFF35445C);
+  static const Color muted = Color(0xFF8995A8);
 
   @override
   void initState() {
@@ -37,51 +34,36 @@ class _SplashScreenState extends State<SplashScreen>
 
     _logoController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 700),
     );
 
     _logoScale = Tween<double>(
-      begin: 0.5,
+      begin: 0.85,
       end: 1.0,
     ).animate(
       CurvedAnimation(
         parent: _logoController,
-        curve: Curves.easeOutBack,
-      ),
-    );
-
-    _textController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    );
-
-    _textFade = CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeIn,
-    );
-
-    _textSlide = Tween<Offset>(
-      begin: const Offset(0, 0.5),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _textController,
         curve: Curves.easeOutCubic,
       ),
     );
 
-    _floatController = AnimationController(
+    _contentController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 800),
     );
 
-    _floatAnimation = Tween<double>(
-      begin: -6,
-      end: 6,
+    _contentFade = CurvedAnimation(
+      parent: _contentController,
+      curve: Curves.easeIn,
+    );
+
+    _contentSlide = Tween<Offset>(
+      begin: const Offset(0, 0.12),
+      end: Offset.zero,
     ).animate(
       CurvedAnimation(
-        parent: _floatController,
-        curve: Curves.easeInOut,
+        parent: _contentController,
+        curve: Curves.easeOutCubic,
       ),
     );
 
@@ -97,11 +79,9 @@ class _SplashScreenState extends State<SplashScreen>
 
     _logoController.forward();
 
-    Future.delayed(const Duration(milliseconds: 250), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       if (!mounted) return;
-
-      _textController.forward();
-      _floatController.repeat(reverse: true);
+      _contentController.forward();
     });
 
     Future.delayed(const Duration(milliseconds: 900), () {
@@ -117,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen>
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
+            builder: (_) => const HomeScreen(),
           ),
         );
       },
@@ -128,8 +108,7 @@ class _SplashScreenState extends State<SplashScreen>
   void dispose() {
     _navigationTimer?.cancel();
     _logoController.dispose();
-    _textController.dispose();
-    _floatController.dispose();
+    _contentController.dispose();
     _loadingController.dispose();
 
     super.dispose();
@@ -138,264 +117,94 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFE),
       body: Stack(
         children: [
-          // Latar gradasi biru pastel dan pink pastel
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0EBFF),
-                  Color(0xFFFFF5FA),
-                  Color(0xFFFFE7F1),
-                  Color(0xFFE7F1FF),
-                ],
-                stops: [0.0, 0.38, 0.70, 1.0],
-              ),
-            ),
-          ),
-
-          // Hiasan gradasi di sudut atas
+          // Dekorasi pastel bagian atas
           Positioned(
-            top: -75,
-            left: -65,
-            child: _hiasanBulat(
+            top: -85,
+            right: -75,
+            child: _decoration(
               210,
-              const Color(0xFFBBD5FF).withValues(alpha: 0.55),
+              const Color(0xFFE5EEFF),
             ),
           ),
 
+          // Dekorasi pastel bagian bawah
           Positioned(
-            top: 105,
-            right: -65,
-            child: _hiasanBulat(
-              145,
-              const Color(0xFFFFD3E7).withValues(alpha: 0.60),
-            ),
-          ),
-
-          // Hiasan gradasi di sudut bawah
-          Positioned(
-            bottom: -90,
-            right: -65,
-            child: _hiasanBulat(
+            bottom: -100,
+            left: -85,
+            child: _decoration(
               230,
-              const Color(0xFFBBD5FF).withValues(alpha: 0.60),
+              const Color(0xFFF9EAF2),
             ),
           ),
 
-          Positioned(
-            bottom: 90,
-            left: -55,
-            child: _hiasanBulat(
-              130,
-              const Color(0xFFFFD3E7).withValues(alpha: 0.65),
-            ),
-          ),
-
-          // Dekorasi bintang kecil
-          const Positioned(
-            top: 145,
-            right: 60,
-            child: Icon(
-              Icons.auto_awesome_rounded,
-              color: Color(0xFF8AB8FF),
-              size: 28,
-            ),
-          ),
-
-          const Positioned(
-            bottom: 150,
-            left: 45,
-            child: Icon(
-              Icons.auto_awesome_rounded,
-              color: Color(0xFFFFA9D0),
-              size: 25,
-            ),
-          ),
-
-          // Konten utama
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
-                  vertical: 20,
+                  vertical: 30,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Buku terbuka dan lampu
+                    // Logo buku terbuka
                     ScaleTransition(
                       scale: _logoScale,
-                      child: AnimatedBuilder(
-                        animation: _floatAnimation,
-                        builder: (context, child) {
-                          return Transform.translate(
-                            offset: Offset(
-                              0,
-                              _floatAnimation.value,
-                            ),
-                            child: child,
-                          );
-                        },
-                        child: SizedBox(
-                          width: 190,
-                          height: 165,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            clipBehavior: Clip.none,
-                            children: [
-                              // Lingkaran latar ikon
-                              Container(
-                                width: 150,
-                                height: 140,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Colors.white.withValues(alpha: 0.75),
-                                      biruMuda.withValues(alpha: 0.65),
-                                      pinkMuda.withValues(alpha: 0.55),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              // Buku terbuka
-                              const Positioned(
-                                bottom: 12,
-                                child: Icon(
-                                  Icons.menu_book_rounded,
-                                  size: 120,
-                                  color: warnaBiru,
-                                  shadows: [
-                                    Shadow(
-                                      color: Color(0x4080AFFF),
-                                      blurRadius: 14,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              // Lampu kecil di atas buku
-                              Positioned(
-                                top: 0,
-                                child: Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: const Color(0xFFFFE8A9)
-                                        .withValues(alpha: 0.85),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: kuningLampu
-                                            .withValues(alpha: 0.35),
-                                        blurRadius: 18,
-                                        spreadRadius: 3,
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.lightbulb_rounded,
-                                    color: Color(0xFFFFB84D),
-                                    size: 37,
-                                  ),
-                                ),
-                              ),
-
-                              // Kilau kecil
-                              const Positioned(
-                                top: 8,
-                                left: 12,
-                                child: Icon(
-                                  Icons.auto_awesome_rounded,
-                                  color: Color(0xFFFFA9D0),
-                                  size: 20,
-                                ),
-                              ),
-
-                              const Positioned(
-                                top: 55,
-                                right: 4,
-                                child: Icon(
-                                  Icons.auto_awesome_rounded,
-                                  color: Color(0xFF8AB8FF),
-                                  size: 22,
-                                ),
-                              ),
-                            ],
-                          ),
+                      child: Container(
+                        width: 170,
+                        height: 155,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEAF2FF),
+                          borderRadius: BorderRadius.circular(35),
                         ),
+                        child: _buildBookLogo(),
                       ),
                     ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 32),
 
-                    // Tulisan Welcome to StudyMate
+                    // Tulisan StudyMate
                     FadeTransition(
-                      opacity: _textFade,
+                      opacity: _contentFade,
                       child: SlideTransition(
-                        position: _textSlide,
+                        position: _contentSlide,
                         child: Column(
                           children: [
                             const Text(
                               'Welcome to',
-                              textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 23,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF719FE5),
-                                letterSpacing: 1.0,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: muted,
                               ),
                             ),
 
-                            const SizedBox(height: 5),
-
-                            Text(
-                              'StudyMate',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.w800,
-                                color: warnaBiru,
-                                letterSpacing: 0.5,
-                                shadows: [
-                                  Shadow(
-                                    color: warnaBiru.withValues(alpha: 0.15),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 8),
-
-                            Container(
-                              width: 105,
-                              height: 4,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF9FC5FF),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-
-                            const SizedBox(height: 17),
+                            const SizedBox(height: 7),
 
                             const Text(
-                              'Belajar, bertumbuh, dan raih prestasimu!',
+                              'StudyMate',
+                              style: TextStyle(
+                                fontSize: 34,
+                                fontWeight: FontWeight.w600,
+                                color: teks,
+                                letterSpacing: -0.7,
+                              ),
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            const Text(
+                              'Kelola aktivitas akademikmu\n'
+                              'dengan lebih mudah dan teratur.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF858FA7),
-                                height: 1.5,
+                                fontSize: 14,
+                                height: 1.6,
+                                color: muted,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                           ],
@@ -403,30 +212,31 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
 
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 42),
 
-                    // Animasi loading
+                    // Loading
                     FadeTransition(
                       opacity: _loadingFade,
-                      child: const Text(
-                        '•••',
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: warnaBiru,
-                          letterSpacing: 6,
+                      child: const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: biru,
                         ),
                       ),
                     ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 16),
 
                     FadeTransition(
                       opacity: _loadingFade,
                       child: const Text(
                         'Version 1.0',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF9AA2B2),
+                          fontSize: 11,
+                          color: muted,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
@@ -440,13 +250,133 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  // Membuat hiasan bulat pastel
-  Widget _hiasanBulat(double ukuran, Color warna) {
+  // Ilustrasi buku terbuka
+  Widget _buildBookLogo() {
+    return SizedBox(
+      width: 150,
+      height: 124,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Sampul belakang buku
+          Positioned(
+            bottom: 17,
+            child: Container(
+              width: 116,
+              height: 75,
+              decoration: BoxDecoration(
+                color: const Color(0xFF82B4F5),
+                borderRadius: BorderRadius.circular(9),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF82B4F5)
+                        .withValues(alpha: 0.25),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Halaman kiri
+          Positioned(
+            left: 15,
+            bottom: 23,
+            child: Transform.rotate(
+              angle: -0.07,
+              child: _bookPage(isLeft: true),
+            ),
+          ),
+
+          // Halaman kanan
+          Positioned(
+            right: 15,
+            bottom: 23,
+            child: Transform.rotate(
+              angle: 0.07,
+              child: _bookPage(isLeft: false),
+            ),
+          ),
+
+          // Garis tengah buku
+          Positioned(
+            bottom: 22,
+            child: Container(
+              width: 3,
+              height: 65,
+              decoration: BoxDecoration(
+                color: const Color(0xFF719FD9),
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+          ),
+
+          // Pita pink
+          Positioned(
+            top: 18,
+            right: 35,
+            child: Container(
+              width: 10,
+              height: 25,
+              decoration: const BoxDecoration(
+                color: Color(0xFFFFAFCB),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(3),
+                  bottomRight: Radius.circular(3),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Membuat halaman buku
+  Widget _bookPage({required bool isLeft}) {
     return Container(
-      width: ukuran,
-      height: ukuran,
+      width: 60,
+      height: 65,
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: warna,
+        color: const Color(0xFFFFFEFC),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(isLeft ? 9 : 3),
+          topRight: Radius.circular(isLeft ? 3 : 9),
+          bottomLeft: Radius.circular(isLeft ? 5 : 3),
+          bottomRight: Radius.circular(isLeft ? 3 : 5),
+        ),
+        border: Border.all(
+          color: const Color(0xFFE4EAF2),
+          width: 0.8,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(
+          4,
+          (index) => Container(
+            margin: const EdgeInsets.only(bottom: 7),
+            height: 2,
+            width: index == 3 ? 25 : 37,
+            decoration: BoxDecoration(
+              color: const Color(0xFFD5DFEC),
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Dekorasi lingkaran pastel
+  Widget _decoration(double size, Color color) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: color,
         shape: BoxShape.circle,
       ),
     );

@@ -6,12 +6,21 @@ import '../services/notification_service.dart';
 import 'tambah_tugas_screen.dart';
 import 'daftar_tugas_status_screen.dart';
 
-const Color _biru = Color(0xFF6EA8FE);
-const Color _biruTua = Color(0xFF3978D4);
-const Color _biruMuda = Color(0xFFEAF3FF);
-const Color _latar = Color(0xFFF6F9FF);
-const Color _teks = Color(0xFF263750);
-const Color _abu = Color(0xFF8794A8);
+const Color _blue = Color(0xFF3478C8);
+const Color _darkBlue = Color(0xFF344054);
+const Color _background = Color(0xFFF5F7FA);
+const Color _line = Color(0xFFE4E8EF);
+const Color _muted = Color(0xFF7C8798);
+
+const Color _softBlue = Color(0xFFEAF2FC);
+const Color _softPink = Color(0xFFFCECF2);
+const Color _softMint = Color(0xFFE8F5EF);
+const Color _softPeach = Color(0xFFFFF1E5);
+
+const Color _pink = Color(0xFFD7799E);
+const Color _green = Color(0xFF36A875);
+const Color _orange = Color(0xFFE6A34D);
+const Color _red = Color(0xFFD65353);
 
 class TugasScreen extends StatefulWidget {
   const TugasScreen({super.key});
@@ -24,8 +33,10 @@ class _TugasScreenState extends State<TugasScreen> {
   final DatabaseHelper _db = DatabaseHelper.instance;
 
   List<Map<String, String>> tugas = [];
+
   bool _sedangMemuat = true;
   bool _sedangMenyimpan = false;
+
   String _filterStatus = 'Semua';
   String _kataKunci = '';
 
@@ -340,14 +351,16 @@ class _TugasScreenState extends State<TugasScreen> {
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(17),
         ),
         title: const Text(
-          'Ubah Status',
+          'Ubah Status Tugas',
           style: TextStyle(
-            color: _teks,
-            fontWeight: FontWeight.bold,
+            color: _darkBlue,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
           ),
         ),
         content: Column(
@@ -371,12 +384,19 @@ class _TugasScreenState extends State<TugasScreen> {
 
     return ListTile(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(10),
       ),
-      leading: Icon(Icons.circle, color: warna, size: 12),
+      leading: Icon(
+        Icons.circle,
+        color: warna,
+        size: 12,
+      ),
       title: Text(
         statusBaru,
-        style: const TextStyle(fontSize: 14),
+        style: const TextStyle(
+          fontSize: 13,
+          color: _darkBlue,
+        ),
       ),
       onTap: () async {
         final item = Map<String, String>.from(tugas[index]);
@@ -411,7 +431,6 @@ class _TugasScreenState extends State<TugasScreen> {
     );
   }
 
-
   Future<void> _hapusTugas(int index) async {
     if (index < 0 || index >= tugas.length) return;
 
@@ -420,26 +439,38 @@ class _TugasScreenState extends State<TugasScreen> {
     final konfirmasi = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(17),
         ),
         title: const Text(
           'Hapus Tugas?',
           style: TextStyle(
-            color: _teks,
-            fontWeight: FontWeight.bold,
+            color: _darkBlue,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        content: Text('Tugas "${item['judul']}" akan dihapus.'),
+        content: Text(
+          'Tugas "${item['judul']}" akan dihapus.',
+          style: const TextStyle(
+            color: _muted,
+            fontSize: 13,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Batal'),
+            child: const Text(
+              'Batal',
+              style: TextStyle(color: _muted),
+            ),
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: _red,
               foregroundColor: Colors.white,
+              elevation: 0,
             ),
             onPressed: () => Navigator.pop(dialogContext, true),
             child: const Text('Hapus'),
@@ -480,7 +511,7 @@ class _TugasScreenState extends State<TugasScreen> {
           content: Text(pesan),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
       );
@@ -489,11 +520,22 @@ class _TugasScreenState extends State<TugasScreen> {
   Color _warnaStatus(String status) {
     switch (status) {
       case 'Selesai':
-        return const Color(0xFF36A875);
+        return _green;
       case 'Sedang Dikerjakan':
-        return const Color(0xFFEF9D42);
+        return _orange;
       default:
-        return const Color(0xFFE46F83);
+        return _pink;
+    }
+  }
+
+  Color _latarStatus(String status) {
+    switch (status) {
+      case 'Selesai':
+        return _softMint;
+      case 'Sedang Dikerjakan':
+        return _softPeach;
+      default:
+        return _softPink;
     }
   }
 
@@ -526,9 +568,7 @@ class _TugasScreenState extends State<TugasScreen> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => DaftarTugasStatusScreen(
-          status: status,
-        ),
+        builder: (_) => DaftarTugasStatusScreen(status: status),
       ),
     );
   }
@@ -536,64 +576,73 @@ class _TugasScreenState extends State<TugasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _latar,
+      backgroundColor: _background,
       appBar: AppBar(
-        backgroundColor: _latar,
+        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        centerTitle: false,
+        scrolledUnderElevation: 0,
         title: const Text(
           'Daftar Tugas',
           style: TextStyle(
-            color: _teks,
-            fontWeight: FontWeight.w800,
-            fontSize: 23,
+            color: _darkBlue,
+            fontWeight: FontWeight.w600,
+            fontSize: 19,
           ),
         ),
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 18),
-            width: 42,
-            height: 42,
+            width: 39,
+            height: 39,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
+              color: _softBlue,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
               Icons.assignment_outlined,
-              color: _biruTua,
+              color: _blue,
+              size: 21,
             ),
           ),
         ],
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(
+            height: 1,
+            thickness: 1,
+            color: _line,
+          ),
+        ),
       ),
       body: _sedangMemuat
           ? const Center(
-              child: CircularProgressIndicator(color: _biru),
+              child: CircularProgressIndicator(color: _blue),
             )
           : RefreshIndicator(
-              color: _biruTua,
+              color: _blue,
               onRefresh: _muatTugas,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
+                padding: const EdgeInsets.fromLTRB(20, 18, 20, 100),
                 children: [
                   _headerTugas(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 22),
                   _ringkasanTugas(),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 26),
                   const Text(
                     'Tugas Kuliah',
                     style: TextStyle(
-                      color: _teks,
-                      fontSize: 19,
-                      fontWeight: FontWeight.w800,
+                      color: _darkBlue,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 13),
                   _kolomPencarian(),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 13),
                   _filterTugas(),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 17),
                   if (_tugasTerfilter.isEmpty)
                     _tampilanKosong()
                   else
@@ -615,13 +664,13 @@ class _TugasScreenState extends State<TugasScreen> {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'fab-tugas',
         onPressed: _sedangMenyimpan ? null : _tambahTugas,
-        backgroundColor: _biruTua,
+        backgroundColor: _blue,
         foregroundColor: Colors.white,
-        elevation: 4,
+        elevation: 2,
         icon: _sedangMenyimpan
             ? const SizedBox(
-                width: 20,
-                height: 20,
+                width: 19,
+                height: 19,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   color: Colors.white,
@@ -630,7 +679,10 @@ class _TugasScreenState extends State<TugasScreen> {
             : const Icon(Icons.add_rounded),
         label: Text(
           _sedangMenyimpan ? 'Menyimpan...' : 'Tambah Tugas',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -639,24 +691,10 @@ class _TugasScreenState extends State<TugasScreen> {
   Widget _headerTugas() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(19),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF83B7FF),
-            Color(0xFF5B96F0),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(26),
-        boxShadow: [
-          BoxShadow(
-            color: _biru.withValues(alpha: 0.25),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        color: _blue,
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         children: [
@@ -665,58 +703,58 @@ class _TugasScreenState extends State<TugasScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Belajar Lebih Teratur ✨',
+                  'Kelola Tugas Kuliah',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 7),
                 Text(
                   tugas.isEmpty
-                      ? 'Yuk, tambahkan tugas pertamamu!'
-                      : 'Selesaikan satu per satu, kamu pasti bisa.',
+                      ? 'Mulai catat tugas dan deadline kuliahmu.'
+                      : 'Atur tugasmu dan selesaikan satu per satu.',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 15),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 9,
+                    horizontal: 11,
+                    vertical: 7,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.22),
-                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white.withValues(alpha: 0.17),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     '${tugas.length} tugas tercatat',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Container(
-            width: 74,
-            height: 82,
+            width: 54,
+            height: 54,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.19),
-              borderRadius: BorderRadius.circular(23),
+              color: Colors.white.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
-              Icons.menu_book_rounded,
+              Icons.assignment_outlined,
               color: Colors.white,
-              size: 43,
+              size: 29,
             ),
           ),
         ],
@@ -731,31 +769,31 @@ class _TugasScreenState extends State<TugasScreen> {
           child: _kartuRingkasan(
             label: 'Belum selesai',
             jumlah: _jumlahBelum,
-            icon: Icons.pending_actions_rounded,
-            warna: const Color(0xFFE6A34D),
-            latar: const Color(0xFFFFF4E5),
+            icon: Icons.pending_actions_outlined,
+            warna: _orange,
+            latar: _softPeach,
             onTap: () => _bukaDaftarStatus('Belum Dikerjakan'),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 9),
         Expanded(
           child: _kartuRingkasan(
             label: 'Dikerjakan',
             jumlah: _jumlahProses,
             icon: Icons.autorenew_rounded,
-            warna: _biruTua,
-            latar: _biruMuda,
+            warna: _blue,
+            latar: _softBlue,
             onTap: () => _bukaDaftarStatus('Sedang Dikerjakan'),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 9),
         Expanded(
           child: _kartuRingkasan(
             label: 'Selesai',
             jumlah: _jumlahSelesai,
             icon: Icons.check_circle_outline_rounded,
-            warna: const Color(0xFF36A875),
-            latar: const Color(0xFFE7F8EF),
+            warna: _green,
+            latar: _softMint,
             onTap: () => _bukaDaftarStatus('Selesai'),
           ),
         ),
@@ -771,57 +809,58 @@ class _TugasScreenState extends State<TugasScreen> {
     required Color latar,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 15,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: const Color(0xFFECF1F8),
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(13),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(13),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 13,
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 35,
-              height: 35,
-              decoration: BoxDecoration(
-                color: latar,
-                borderRadius: BorderRadius.circular(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13),
+            border: Border.all(color: _line),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 33,
+                height: 33,
+                decoration: BoxDecoration(
+                  color: latar,
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Icon(
+                  icon,
+                  color: warna,
+                  size: 19,
+                ),
               ),
-              child: Icon(
-                icon,
-                color: warna,
-                size: 20,
+              const SizedBox(height: 10),
+              Text(
+                '$jumlah',
+                style: const TextStyle(
+                  color: _darkBlue,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              '$jumlah',
-              style: const TextStyle(
-                color: _teks,
-                fontSize: 23,
-                fontWeight: FontWeight.w800,
+              const SizedBox(height: 3),
+              Text(
+                label,
+                maxLines: 2,
+                style: const TextStyle(
+                  color: _muted,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              maxLines: 2,
-              style: const TextStyle(
-                color: _abu,
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -837,27 +876,31 @@ class _TugasScreenState extends State<TugasScreen> {
       decoration: InputDecoration(
         hintText: 'Cari judul atau mata kuliah...',
         hintStyle: const TextStyle(
-          color: _abu,
-          fontSize: 13,
+          color: _muted,
+          fontSize: 12,
         ),
         prefixIcon: const Icon(
           Icons.search_rounded,
-          color: _biruTua,
+          color: _blue,
+          size: 21,
         ),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(vertical: 15),
+        contentPadding: const EdgeInsets.symmetric(vertical: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(17),
-          borderSide: const BorderSide(color: Color(0xFFECF1F8)),
+          borderRadius: BorderRadius.circular(11),
+          borderSide: const BorderSide(color: _line),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(17),
-          borderSide: const BorderSide(color: Color(0xFFECF1F8)),
+          borderRadius: BorderRadius.circular(11),
+          borderSide: const BorderSide(color: _line),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(17),
-          borderSide: const BorderSide(color: _biru, width: 1.5),
+          borderRadius: BorderRadius.circular(11),
+          borderSide: const BorderSide(
+            color: _blue,
+            width: 1.4,
+          ),
         ),
       ),
     );
@@ -878,25 +921,23 @@ class _TugasScreenState extends State<TugasScreen> {
           final terpilih = _filterStatus == pilihanStatus;
 
           return Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.only(right: 7),
             child: ChoiceChip(
               label: Text(pilihanStatus),
               selected: terpilih,
               showCheckmark: false,
               labelStyle: TextStyle(
-                color: terpilih ? Colors.white : _abu,
+                color: terpilih ? Colors.white : _muted,
                 fontSize: 11,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w500,
               ),
               backgroundColor: Colors.white,
-              selectedColor: _biruTua,
+              selectedColor: _blue,
               side: BorderSide(
-                color: terpilih
-                    ? _biruTua
-                    : const Color(0xFFECF1F8),
+                color: terpilih ? _blue : _line,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(8),
               ),
               onSelected: (_) {
                 setState(() {
@@ -911,65 +952,65 @@ class _TugasScreenState extends State<TugasScreen> {
   }
 
   Widget _tampilanKosong() {
-    final bool adaFilter =
+    final adaFilter =
         _kataKunci.isNotEmpty || _filterStatus != 'Semua';
 
     return Container(
-      margin: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.only(top: 5),
       padding: const EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: 35,
+        horizontal: 22,
+        vertical: 30,
       ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFECF1F8)),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: _line),
       ),
       child: Column(
         children: [
           Container(
-            width: 82,
-            height: 82,
-            decoration: const BoxDecoration(
-              color: _biruMuda,
-              shape: BoxShape.circle,
+            width: 68,
+            height: 68,
+            decoration: BoxDecoration(
+              color: _softBlue,
+              borderRadius: BorderRadius.circular(15),
             ),
             child: const Icon(
-              Icons.assignment_turned_in_outlined,
-              color: _biruTua,
-              size: 40,
+              Icons.assignment_outlined,
+              color: _blue,
+              size: 34,
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
           Text(
             adaFilter ? 'Tugas tidak ditemukan' : 'Belum ada tugas',
             style: const TextStyle(
-              color: _teks,
-              fontSize: 17,
-              fontWeight: FontWeight.w800,
+              color: _darkBlue,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 7),
           Text(
             adaFilter
                 ? 'Coba kata kunci atau status lainnya.'
-                : 'Tambahkan tugas kuliahmu agar tidak ada deadline yang terlewat.',
+                : 'Tambahkan tugas kuliahmu agar deadline tidak terlewat.',
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: _abu,
+              color: _muted,
               fontSize: 12,
-              height: 1.6,
+              height: 1.5,
             ),
           ),
           if (!adaFilter) ...[
-            const SizedBox(height: 18),
+            const SizedBox(height: 16),
             OutlinedButton.icon(
               onPressed: _tambahTugas,
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Tambah Tugas Pertama'),
+              icon: const Icon(Icons.add_rounded, size: 18),
+              label: const Text('Tambah Tugas'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: _biruTua,
-                side: const BorderSide(color: _biru),
+                foregroundColor: _blue,
+                side: const BorderSide(color: _blue),
               ),
             ),
           ],
@@ -987,192 +1028,185 @@ class _TugasScreenState extends State<TugasScreen> {
     required String status,
   }) {
     final warna = _warnaStatus(status);
+    final latarStatus = _latarStatus(status);
+
     final deadlineDate = _tanggalDanWaktu(tugas[index]);
+
     final terlambat = status != 'Selesai' &&
         deadlineDate != null &&
         deadlineDate.isBefore(DateTime.now());
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: terlambat
-              ? const Color(0xFFF3C7CD)
-              : const Color(0xFFECF1F8),
+              ? const Color(0xFFF0CCCC)
+              : _line,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF355078).withValues(alpha: 0.045),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
-          ),
-        ],
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(22),
-        onTap: () => _detailTugas(index),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 49,
-                    height: 49,
-                    decoration: BoxDecoration(
-                      color: _biruMuda,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: const Icon(
-                      Icons.assignment_rounded,
-                      color: _biruTua,
-                      size: 25,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          judul,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: _teks,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
-                            height: 1.35,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.menu_book_rounded,
-                              color: _abu,
-                              size: 14,
-                            ),
-                            const SizedBox(width: 5),
-                            Expanded(
-                              child: Text(
-                                mataKuliah,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: _abu,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  const Icon(
-                    Icons.chevron_right_rounded,
-                    color: _abu,
-                    size: 22,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 11,
-                ),
-                decoration: BoxDecoration(
-                  color: terlambat
-                      ? const Color(0xFFFFEEEE)
-                      : const Color(0xFFF5F8FD),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Row(
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () => _detailTugas(index),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      terlambat
-                          ? Icons.warning_amber_rounded
-                          : Icons.calendar_month_rounded,
-                      size: 18,
-                      color: terlambat
-                          ? Colors.redAccent
-                          : _biruTua,
+                    Container(
+                      width: 43,
+                      height: 43,
+                      decoration: BoxDecoration(
+                        color: _softBlue,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.assignment_outlined,
+                        color: _blue,
+                        size: 23,
+                      ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 11),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            terlambat ? 'Deadline terlewat' : 'Deadline',
-                            style: TextStyle(
-                              color: terlambat
-                                  ? Colors.redAccent
-                                  : _abu,
-                              fontSize: 10,
+                            judul,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: _darkBlue,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
+                              height: 1.35,
                             ),
                           ),
-                          const SizedBox(height: 3),
+                          const SizedBox(height: 6),
                           Text(
-                            '$deadline'
-                            '${waktuDeadline.isNotEmpty ? ' • $waktuDeadline' : ''}',
-                            style: TextStyle(
-                              color: terlambat
-                                  ? Colors.redAccent
-                                  : _teks,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
+                            mataKuliah,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: _muted,
+                              fontSize: 11,
                             ),
                           ),
                         ],
                       ),
                     ),
+                    const SizedBox(width: 5),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      color: _muted,
+                      size: 21,
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 13),
-              Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: warna,
-                      shape: BoxShape.circle,
-                    ),
+                const SizedBox(height: 14),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(11),
+                  decoration: BoxDecoration(
+                    color: terlambat
+                        ? const Color(0xFFFFF0F0)
+                        : _background,
+                    borderRadius: BorderRadius.circular(9),
                   ),
-                  const SizedBox(width: 7),
-                  Expanded(
-                    child: Text(
-                      status,
-                      style: TextStyle(
-                        color: warna,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
+                  child: Row(
+                    children: [
+                      Icon(
+                        terlambat
+                            ? Icons.warning_amber_rounded
+                            : Icons.calendar_today_outlined,
+                        size: 17,
+                        color: terlambat ? _red : _blue,
+                      ),
+                      const SizedBox(width: 9),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              terlambat ? 'Deadline terlewat' : 'Deadline',
+                              style: TextStyle(
+                                color: terlambat ? _red : _muted,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              '$deadline'
+                              '${waktuDeadline.isNotEmpty ? ' • $waktuDeadline' : ''}',
+                              style: TextStyle(
+                                color: terlambat ? _red : _darkBlue,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: latarStatus,
+                        borderRadius: BorderRadius.circular(7),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: warna,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            status,
+                            style: TextStyle(
+                              color: warna,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Text(
-                    'Lihat detail',
-                    style: TextStyle(
-                      color: _biruTua.withValues(alpha: 0.9),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
+                    const Spacer(),
+                    const Text(
+                      'Lihat detail',
+                      style: TextStyle(
+                        color: _blue,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1184,23 +1218,30 @@ class _TugasScreenState extends State<TugasScreen> {
 
     final item = Map<String, String>.from(tugas[index]);
     final warna = _warnaStatus(item['status'] ?? '');
+    final latarStatus = _latarStatus(item['status'] ?? '');
 
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(17),
         ),
         title: const Row(
           children: [
-            Icon(Icons.assignment_rounded, color: _biruTua),
-            SizedBox(width: 10),
+            Icon(
+              Icons.assignment_outlined,
+              color: _blue,
+              size: 22,
+            ),
+            SizedBox(width: 9),
             Expanded(
               child: Text(
                 'Detail Tugas',
                 style: TextStyle(
-                  color: _teks,
-                  fontWeight: FontWeight.w800,
+                  color: _darkBlue,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -1214,31 +1255,31 @@ class _TugasScreenState extends State<TugasScreen> {
               Text(
                 item['judul'] ?? '',
                 style: const TextStyle(
-                  color: _teks,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
+                  color: _darkBlue,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 13),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 11,
+                  horizontal: 10,
                   vertical: 7,
                 ),
                 decoration: BoxDecoration(
-                  color: warna.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  color: latarStatus,
+                  borderRadius: BorderRadius.circular(7),
                 ),
                 child: Text(
                   item['status'] ?? '',
                   style: TextStyle(
                     color: warna,
                     fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 18),
               _infoRow('Mata Kuliah', item['mataKuliah'] ?? ''),
               _infoRow('Tanggal', item['deadline'] ?? ''),
               _infoRow(
@@ -1259,7 +1300,10 @@ class _TugasScreenState extends State<TugasScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Tutup'),
+            child: const Text(
+              'Tutup',
+              style: TextStyle(color: _muted),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -1275,10 +1319,11 @@ class _TugasScreenState extends State<TugasScreen> {
             },
             child: const Text('Status'),
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _biruTua,
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: _blue,
               foregroundColor: Colors.white,
+              elevation: 0,
             ),
             onPressed: () {
               Navigator.pop(dialogContext);
@@ -1293,27 +1338,33 @@ class _TugasScreenState extends State<TugasScreen> {
 
   Widget _infoRow(String title, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.only(bottom: 13),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 85,
+            width: 82,
             child: Text(
               title,
               style: const TextStyle(
-                color: _abu,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+                color: _muted,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
-          const Text(': '),
+          const Text(
+            ': ',
+            style: TextStyle(
+              color: _muted,
+              fontSize: 11,
+            ),
+          ),
           Expanded(
             child: Text(
               value,
               style: const TextStyle(
-                color: _teks,
+                color: _darkBlue,
                 fontSize: 12,
                 height: 1.5,
               ),

@@ -1,15 +1,14 @@
 
 import 'package:flutter/material.dart';
 
-const Color _blue = Color(0xFF8DBBFA);
-const Color _darkBlue = Color(0xFF40516F);
-const Color _background = Color(0xFFF4F8FF);
-const Color _softBlue = Color(0xFFEAF4FF);
-const Color _softPink = Color(0xFFFFEAF2);
-const Color _softPinkDark = Color(0xFFE99BB9);
-const Color _softBlueDark = Color(0xFF719FD9);
-const Color _softLavender = Color(0xFFE8E3FF);
-const Color _muted = Color(0xFF8796B0);
+const Color _blue = Color(0xFF3478C8);
+const Color _darkBlue = Color(0xFF344054);
+const Color _background = Color(0xFFF5F7FA);
+const Color _line = Color(0xFFE4E8EF);
+const Color _muted = Color(0xFF7C8798);
+const Color _softBlue = Color(0xFFEAF2FC);
+const Color _softPink = Color(0xFFFCECF2);
+const Color _pink = Color(0xFFD7799E);
 
 class TambahMataKuliahScreen extends StatefulWidget {
   final Map<String, String>? dataEdit;
@@ -41,6 +40,7 @@ class _TambahMataKuliahScreenState
     super.initState();
 
     final data = widget.dataEdit;
+
     if (data != null) {
       namaController.text =
           data['course_name'] ?? data['nama'] ?? '';
@@ -74,9 +74,10 @@ class _TambahMataKuliahScreenState
     return Scaffold(
       backgroundColor: _background,
       appBar: AppBar(
-        backgroundColor: _background,
+        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(
@@ -88,8 +89,16 @@ class _TambahMataKuliahScreenState
           sedangEdit ? 'Edit Mata Kuliah' : 'Tambah Mata Kuliah',
           style: const TextStyle(
             color: _darkBlue,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontSize: 19,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(
+            height: 1,
+            thickness: 1,
+            color: _line,
           ),
         ),
       ),
@@ -97,152 +106,183 @@ class _TambahMataKuliahScreenState
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 30),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _header(),
+
                 const SizedBox(height: 26),
 
                 const Text(
                   'Informasi Mata Kuliah',
                   style: TextStyle(
                     color: _darkBlue,
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 6),
+
+                const SizedBox(height: 5),
+
                 const Text(
-                  'Lengkapi informasi akademikmu di bawah ini.',
+                  'Lengkapi informasi akademik berikut.',
                   style: TextStyle(
                     color: _muted,
                     fontSize: 12,
-                    height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 22),
 
-                _label('Nama Mata Kuliah', Icons.menu_book_rounded),
-                const SizedBox(height: 9),
-                TextFormField(
-                  controller: namaController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: _inputDecoration(
-                    'Contoh: Pemrograman Berbasis Objek',
-                    Icons.menu_book_outlined,
-                    pink: false,
-                  ),
-                  validator: (value) =>
-                      value == null || value.trim().isEmpty
-                          ? 'Nama mata kuliah wajib diisi'
-                          : null,
-                ),
                 const SizedBox(height: 20),
 
-                _label(
-                  'Kode Mata Kuliah',
-                  Icons.confirmation_number_rounded,
-                ),
-                const SizedBox(height: 9),
-                TextFormField(
-                  controller: kodeController,
-                  textCapitalization: TextCapitalization.characters,
-                  decoration: _inputDecoration(
-                    'Contoh: PTI501',
-                    Icons.tag_rounded,
-                    pink: true,
+                // FORM
+                Container(
+                  padding: const EdgeInsets.all(17),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: _line),
                   ),
-                  validator: (value) =>
-                      value == null || value.trim().isEmpty
-                          ? 'Kode mata kuliah wajib diisi'
-                          : null,
-                ),
-                const SizedBox(height: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _label('Nama Mata Kuliah'),
+                      const SizedBox(height: 9),
 
-                _label('Dosen Pengampu', Icons.person_rounded),
-                const SizedBox(height: 9),
-                TextFormField(
-                  controller: dosenController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: _inputDecoration(
-                    'Masukkan nama dosen pengampu',
-                    Icons.person_outline_rounded,
-                    pink: false,
-                  ),
-                  validator: (value) =>
-                      value == null || value.trim().isEmpty
-                          ? 'Nama dosen wajib diisi'
-                          : null,
-                ),
-                const SizedBox(height: 20),
+                      TextFormField(
+                        controller: namaController,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: _inputDecoration(
+                          'Contoh: Pemrograman Berbasis Objek',
+                          Icons.menu_book_outlined,
+                        ),
+                        validator: (value) =>
+                            value == null || value.trim().isEmpty
+                                ? 'Nama mata kuliah wajib diisi'
+                                : null,
+                      ),
 
-                _label('Semester', Icons.school_rounded),
-                const SizedBox(height: 9),
-                DropdownButtonFormField<String>(
-                  value: semester,
-                  isExpanded: true,
-                  decoration: _inputDecoration(
-                    'Pilih semester',
-                    Icons.calendar_month_rounded,
-                    pink: true,
-                  ),
-                  borderRadius: BorderRadius.circular(18),
-                  items: List.generate(
-                    8,
-                    (index) {
-                      final semesterKe = index + 1;
-                      return DropdownMenuItem<String>(
-                        value: 'Semester $semesterKe',
-                        child: Text('Semester $semesterKe'),
-                      );
-                    },
-                  ),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => semester = value);
-                    }
-                  },
-                ),
-                const SizedBox(height: 30),
+                      const SizedBox(height: 20),
 
+                      _label('Kode Mata Kuliah'),
+                      const SizedBox(height: 9),
+
+                      TextFormField(
+                        controller: kodeController,
+                        textCapitalization:
+                            TextCapitalization.characters,
+                        decoration: _inputDecoration(
+                          'Contoh: PTI501',
+                          Icons.tag_rounded,
+                          pink: true,
+                        ),
+                        validator: (value) =>
+                            value == null || value.trim().isEmpty
+                                ? 'Kode mata kuliah wajib diisi'
+                                : null,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      _label('Dosen Pengampu'),
+                      const SizedBox(height: 9),
+
+                      TextFormField(
+                        controller: dosenController,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: _inputDecoration(
+                          'Masukkan nama dosen pengampu',
+                          Icons.person_outline_rounded,
+                        ),
+                        validator: (value) =>
+                            value == null || value.trim().isEmpty
+                                ? 'Nama dosen wajib diisi'
+                                : null,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      _label('Semester'),
+                      const SizedBox(height: 9),
+
+                      DropdownButtonFormField<String>(
+                        initialValue: semester,
+                        isExpanded: true,
+                        decoration: _inputDecoration(
+                          'Pilih semester',
+                          Icons.calendar_month_outlined,
+                          pink: true,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                        items: List.generate(
+                          8,
+                          (index) {
+                            final semesterKe = index + 1;
+
+                            return DropdownMenuItem<String>(
+                              value: 'Semester $semesterKe',
+                              child: Text(
+                                'Semester $semesterKe',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: _darkBlue,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() => semester = value);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                // TOMBOL SIMPAN
                 SizedBox(
                   width: double.infinity,
-                  height: 55,
+                  height: 50,
                   child: ElevatedButton.icon(
                     onPressed: _simpanMataKuliah,
                     icon: Icon(
                       sedangEdit
-                          ? Icons.check_circle_outline_rounded
-                          : Icons.save_rounded,
+                          ? Icons.check_rounded
+                          : Icons.save_outlined,
+                      size: 20,
                     ),
                     label: Text(
                       sedangEdit
                           ? 'Simpan Perubahan'
                           : 'Simpan Mata Kuliah',
                       style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _blue,
                       foregroundColor: Colors.white,
-                      elevation: 3,
-                      shadowColor: _blue.withValues(alpha: 0.3),
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(11),
                       ),
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 12),
+
                 Center(
                   child: Text(
-                    'StudyMate • Atur kuliah, raih impian ✨',
+                    'StudyMate • Academic Management',
                     style: TextStyle(
-                      color: _muted.withValues(alpha: 0.9),
-                      fontSize: 11,
+                      color: Colors.blueGrey.shade400,
+                      fontSize: 10,
                     ),
                   ),
                 ),
@@ -254,29 +294,14 @@ class _TambahMataKuliahScreenState
     );
   }
 
+  // HEADER
   Widget _header() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(19),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFFDCEBFF),
-            Color(0xFFE8E3FF),
-            Color(0xFFFFEAF2),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.white, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: _blue.withValues(alpha: 0.12),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        color: _blue,
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         children: [
@@ -286,42 +311,42 @@ class _TambahMataKuliahScreenState
               children: [
                 Text(
                   sedangEdit
-                      ? 'Perbarui Data ✨'
-                      : 'Tambah Data Baru ✨',
+                      ? 'Perbarui Data'
+                      : 'Tambah Data Baru',
                   style: const TextStyle(
-                    color: _darkBlue,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 9),
+                const SizedBox(height: 8),
                 Text(
                   sedangEdit
                       ? 'Perbarui informasi agar data kuliahmu tetap akurat.'
                       : 'Catat mata kuliahmu agar aktivitas akademik lebih teratur.',
-                  style: TextStyle(
-                    color: _darkBlue.withValues(alpha: 0.8),
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontSize: 12,
-                    height: 1.6,
+                    height: 1.5,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Container(
-            width: 62,
-            height: 68,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.75),
-              borderRadius: BorderRadius.circular(20),
+              color: Colors.white.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(11),
             ),
             child: Icon(
               sedangEdit
                   ? Icons.edit_note_rounded
-                  : Icons.auto_stories_rounded,
-              color: _softBlueDark,
-              size: 35,
+                  : Icons.menu_book_rounded,
+              color: Colors.white,
+              size: 28,
             ),
           ),
         ],
@@ -329,77 +354,91 @@ class _TambahMataKuliahScreenState
     );
   }
 
-  Widget _label(String text, IconData icon) {
+  // LABEL FORM
+  Widget _label(String text) {
     return Row(
       children: [
-        Icon(icon, size: 17, color: _darkBlue),
-        const SizedBox(width: 8),
         Text(
           text,
           style: const TextStyle(
             color: _darkBlue,
             fontSize: 13,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ),
         ),
         const Text(
           ' *',
           style: TextStyle(
-            color: _softPinkDark,
-            fontWeight: FontWeight.bold,
+            color: Color(0xFFD95C65),
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
     );
   }
 
+  // INPUT FORM
   InputDecoration _inputDecoration(
     String hint,
     IconData icon, {
-    required bool pink,
+    bool pink = false,
   }) {
-    final accent = pink ? _softPinkDark : _softBlueDark;
-    final borderColor = pink ? _softPink : _softBlue;
+    final accent = pink ? _pink : _blue;
 
     return InputDecoration(
       hintText: hint,
       hintStyle: const TextStyle(
         color: _muted,
         fontSize: 12,
+        fontWeight: FontWeight.w400,
       ),
-      prefixIcon: Icon(icon, color: accent, size: 21),
+      prefixIcon: Icon(
+        icon,
+        color: accent,
+        size: 20,
+      ),
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 17,
+        horizontal: 13,
+        vertical: 15,
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(17),
-        borderSide: BorderSide(color: borderColor),
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: _line),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(17),
-        borderSide: BorderSide(color: borderColor, width: 1.2),
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(
+          color: _line,
+          width: 1,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(17),
-        borderSide: BorderSide(color: accent, width: 1.6),
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(
+          color: _blue,
+          width: 1.5,
+        ),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(17),
-        borderSide: const BorderSide(color: Colors.redAccent),
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(
+          color: Color(0xFFD95C65),
+        ),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(17),
+        borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(
-          color: Colors.redAccent,
+          color: Color(0xFFD95C65),
           width: 1.5,
         ),
       ),
     );
   }
 
+  // SIMPAN DATA
   void _simpanMataKuliah() {
     if (!_formKey.currentState!.validate()) return;
 

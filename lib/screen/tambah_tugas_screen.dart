@@ -2,6 +2,14 @@
 import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
 
+const Color _plum = Color(0xFF66527F);
+const Color _darkPlum = Color(0xFF423650);
+const Color _lavender = Color(0xFFF3EFF8);
+const Color _pink = Color(0xFFD7799E);
+const Color _background = Color(0xFFFAF8FC);
+const Color _line = Color(0xFFEAE5EF);
+const Color _muted = Color(0xFF8B8494);
+
 class TambahTugasScreen extends StatefulWidget {
   final Map<String, String>? dataEdit;
 
@@ -71,7 +79,6 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
         sedangMemuatMataKuliah = false;
         pesanErrorMataKuliah = null;
 
-        // Pastikan mata kuliah yang dipilih masih ada di database.
         final tersedia = daftarMataKuliah.any(
           (item) =>
               '${item['course_name']}'.trim() ==
@@ -114,17 +121,26 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
             : null;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFD),
+      backgroundColor: _background,
       appBar: AppBar(
         title: Text(
           sedangEdit ? 'Edit Tugas' : 'Tambah Tugas',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: _darkPlum,
           ),
         ),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
+        foregroundColor: _darkPlum,
         elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(
+            height: 1,
+            color: _line,
+          ),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -132,6 +148,13 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _headerTugas(),
+
+              const SizedBox(height: 24),
+
+              _labelBagian('Informasi Tugas'),
+              const SizedBox(height: 15),
+
               _label('Judul Tugas'),
               const SizedBox(height: 8),
               TextField(
@@ -179,7 +202,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                 const Text(
                   'Memuat daftar mata kuliah...',
                   style: TextStyle(
-                    color: Colors.grey,
+                    color: _muted,
                     fontSize: 12,
                   ),
                 ),
@@ -203,6 +226,9 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                   },
                   icon: const Icon(Icons.refresh),
                   label: const Text('Coba lagi'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: _plum,
+                  ),
                 ),
               ],
 
@@ -232,7 +258,10 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
+              _labelBagian('Waktu Pengumpulan'),
+              const SizedBox(height: 15),
+
               _label('Deadline'),
               const SizedBox(height: 8),
               Row(
@@ -243,7 +272,10 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                 ],
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
+              _labelBagian('Status Pengerjaan'),
+              const SizedBox(height: 15),
+
               _label('Status'),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
@@ -306,15 +338,16 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                             ? 'Simpan Perubahan'
                             : 'Simpan Tugas',
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6EA8FE),
+                    backgroundColor: _plum,
                     foregroundColor: Colors.white,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(13),
                     ),
                   ),
                 ),
@@ -327,12 +360,112 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
     );
   }
 
+  Widget _headerTugas() {
+    return Container(
+      height: 165,
+      width: double.infinity,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(
+          colors: [_plum, _darkPlum],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.network(
+            'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=900',
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: _plum,
+                alignment: Alignment.centerRight,
+                child: const Icon(
+                  Icons.menu_book_rounded,
+                  color: Colors.white24,
+                  size: 75,
+                ),
+              );
+            },
+          ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  _darkPlum.withOpacity(0.94),
+                  _darkPlum.withOpacity(0.65),
+                  _darkPlum.withOpacity(0.2),
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'STUDYMATE • ACADEMIC PLANNER',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 9,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 13),
+                Text(
+                  sedangEdit ? 'Edit Tugasmu' : 'Catat Tugasmu',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 7),
+                const SizedBox(
+                  width: 230,
+                  child: Text(
+                    'Kelola aktivitas akademikmu dan selesaikan setiap tugas tepat waktu.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _labelBagian(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        color: _darkPlum,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
   Widget _label(String text) {
     return Text(
       text,
       style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        color: _darkPlum,
       ),
     );
   }
@@ -343,26 +476,34 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
   ) {
     return InputDecoration(
       hintText: hint,
+      hintStyle: const TextStyle(
+        color: _muted,
+        fontSize: 12,
+      ),
       prefixIcon: Icon(
         icon,
-        color: const Color(0xFF6EA8FE),
+        color: _plum,
+        size: 19,
       ),
       filled: true,
       fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 15,
+      ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide.none,
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: _line),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(
-          color: Colors.grey.shade200,
-        ),
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: _line),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(
-          color: Color(0xFF6EA8FE),
+          color: _plum,
+          width: 1.3,
         ),
       ),
     );
@@ -371,7 +512,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
   Widget _dateButton() {
     return InkWell(
       onTap: _pilihTanggal,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 12,
@@ -379,17 +520,15 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
         ),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: Colors.grey.shade200,
-          ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: _line),
         ),
         child: Row(
           children: [
             const Icon(
               Icons.calendar_today_outlined,
-              color: Color(0xFF6EA8FE),
-              size: 20,
+              color: _plum,
+              size: 19,
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -402,9 +541,9 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: tanggalDeadline == null
-                      ? Colors.grey
-                      : Colors.black87,
-                  fontSize: 13,
+                      ? _muted
+                      : _darkPlum,
+                  fontSize: 12,
                 ),
               ),
             ),
@@ -417,7 +556,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
   Widget _timeButton() {
     return InkWell(
       onTap: _pilihWaktu,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 12,
@@ -425,17 +564,15 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
         ),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: Colors.grey.shade200,
-          ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: _line),
         ),
         child: Row(
           children: [
             const Icon(
               Icons.access_time_outlined,
-              color: Color(0xFF6EA8FE),
-              size: 20,
+              color: _pink,
+              size: 19,
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -446,9 +583,9 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: waktuDeadline == null
-                      ? Colors.grey
-                      : Colors.black87,
-                  fontSize: 13,
+                      ? _muted
+                      : _darkPlum,
+                  fontSize: 12,
                 ),
               ),
             ),
@@ -476,6 +613,19 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
       initialDate: tanggalValid,
       firstDate: hariIni,
       lastDate: DateTime(2035),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: _plum,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: _darkPlum,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (!mounted || tanggal == null) return;
@@ -489,6 +639,19 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
     final waktu = await showTimePicker(
       context: context,
       initialTime: waktuDeadline ?? TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: _plum,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: _darkPlum,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (!mounted || waktu == null) return;
@@ -520,7 +683,6 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
       return;
     }
 
-    // Pastikan nama mata kuliah masih ada di database.
     final tersedia = daftarMataKuliah.any(
       (item) =>
           '${item['course_name']}'.trim() == mataKuliah,
@@ -566,7 +728,11 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
 
   void _pesan(String pesan) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(pesan)),
+      SnackBar(
+        content: Text(pesan),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: _darkPlum,
+      ),
     );
   }
 

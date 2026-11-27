@@ -7,11 +7,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data_diri_screen.dart';
 
-const Color _biru = Color(0xFF3478C8);
-const Color _biruTua = Color(0xFF344054);
-const Color _background = Color(0xFFF5F7FA);
-const Color _line = Color(0xFFE4E8EF);
-const Color _abu = Color(0xFF7C8798);
+const Color _plum = Color(0xFF66527F);
+const Color _darkPlum = Color(0xFF423650);
+const Color _background = Color(0xFFFAF8FC);
+const Color _line = Color(0xFFEAE5EF);
+const Color _muted = Color(0xFF8B8494);
+const Color _pink = Color(0xFFD7799E);
+const Color _softLavender = Color(0xFFF0EBF7);
+const Color _softPink = Color(0xFFFFF0F5);
+const Color _softMint = Color(0xFFE8F5EF);
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -75,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return const Scaffold(
         backgroundColor: _background,
         body: Center(
-          child: CircularProgressIndicator(color: _biru),
+          child: CircularProgressIndicator(color: _plum),
         ),
       );
     }
@@ -90,9 +94,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: const Text(
           'Profile Saya',
           style: TextStyle(
-            color: _biruTua,
-            fontWeight: FontWeight.w600,
-            fontSize: 19,
+            color: _darkPlum,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
         bottom: const PreferredSize(
@@ -109,25 +113,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           _buildProfileHeader(),
 
-          const SizedBox(height: 25),
+          const SizedBox(height: 27),
 
-          const Text(
-            'Akun Saya',
-            style: TextStyle(
-              color: _biruTua,
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
+          Row(
+            children: [
+              Container(
+                width: 4,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: _pink,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              const SizedBox(width: 9),
+              const Text(
+                'Akun Saya',
+                style: TextStyle(
+                  color: _darkPlum,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
 
-          const SizedBox(height: 13),
+          const SizedBox(height: 14),
 
           _profileMenu(
             icon: Icons.person_outline_rounded,
             title: 'Data Diri',
             subtitle: 'Lihat dan ubah informasi diri',
-            color: const Color(0xFFEAF2FC),
-            iconColor: _biru,
+            color: _softLavender,
+            iconColor: _plum,
             onTap: _openDataDiri,
           ),
 
@@ -137,8 +154,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: Icons.settings_outlined,
             title: 'Pengaturan',
             subtitle: 'Atur preferensi aplikasi',
-            color: const Color(0xFFF0ECFC),
-            iconColor: const Color(0xFF8870CE),
+            color: _softPink,
+            iconColor: _pink,
             onTap: _openSettings,
           ),
 
@@ -148,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: Icons.auto_awesome_outlined,
             title: 'Tentang StudyMate',
             subtitle: 'Kenali aplikasi StudyMate',
-            color: const Color(0xFFE7F6EF),
+            color: _softMint,
             iconColor: const Color(0xFF36A875),
             onTap: () {
               _showInfo(
@@ -160,7 +177,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             },
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 25),
 
           _buildMotivationCard(),
         ],
@@ -172,12 +189,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildProfileHeader() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 25, 20, 23),
+      padding: const EdgeInsets.fromLTRB(20, 26, 20, 24),
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF2FC),
-        borderRadius: BorderRadius.circular(17),
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFFF0EBF7),
+            Color(0xFFFFF5F8),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(19),
         border: Border.all(
-          color: const Color(0xFFD8E7F8),
+          color: const Color(0xFFE8DFEF),
         ),
       ),
       child: Column(
@@ -187,21 +211,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Container(
                 padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: _plum.withValues(alpha: 0.12),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
                 child: CircleAvatar(
-                  radius: 47,
-                  backgroundColor: const Color(0xFFDCEBFC),
+                  radius: 49,
+                  backgroundColor: const Color(0xFFE8DFEF),
                   backgroundImage: fotoProfil != null
                       ? MemoryImage(fotoProfil!)
                       : null,
                   child: fotoProfil == null
                       ? const Icon(
                           Icons.person_rounded,
-                          size: 52,
-                          color: _biru,
+                          size: 53,
+                          color: _plum,
                         )
                       : null,
                 ),
@@ -210,10 +241,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 right: 0,
                 bottom: 0,
                 child: Container(
-                  width: 31,
-                  height: 31,
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
-                    color: _biru,
+                    color: _plum,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: Colors.white,
@@ -230,15 +261,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 17),
 
           Text(
             nama,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: _biruTua,
+              color: _darkPlum,
               fontSize: 21,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
 
@@ -246,30 +277,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: 13,
+              horizontal: 14,
               vertical: 6,
             ),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(7),
+              borderRadius: BorderRadius.circular(20),
             ),
-            child: const Text(
-              'Mahasiswa',
-              style: TextStyle(
-                color: _biru,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.school_rounded,
+                  color: _plum,
+                  size: 14,
+                ),
+                SizedBox(width: 6),
+                Text(
+                  'Mahasiswa',
+                  style: TextStyle(
+                    color: _plum,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
 
-          const SizedBox(height: 14),
+          const SizedBox(height: 15),
 
           const Text(
             'Terus bertumbuh, satu langkah setiap hari.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: _biruTua,
+              color: _darkPlum,
               fontSize: 12,
               height: 1.5,
             ),
@@ -290,27 +332,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(15),
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(15),
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 14,
-            vertical: 14,
+            vertical: 15,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(15),
             border: Border.all(color: _line),
           ),
           child: Row(
             children: [
               Container(
-                width: 45,
-                height: 45,
+                width: 46,
+                height: 46,
                 decoration: BoxDecoration(
                   color: color,
-                  borderRadius: BorderRadius.circular(11),
+                  borderRadius: BorderRadius.circular(13),
                 ),
                 child: Icon(
                   icon,
@@ -329,8 +371,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title,
                       style: const TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: _biruTua,
+                        fontWeight: FontWeight.bold,
+                        color: _darkPlum,
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -338,7 +380,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       subtitle,
                       style: const TextStyle(
                         fontSize: 12,
-                        color: _abu,
+                        color: _muted,
                       ),
                     ),
                   ],
@@ -347,8 +389,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               const Icon(
                 Icons.chevron_right_rounded,
-                size: 22,
-                color: _abu,
+                size: 23,
+                color: _muted,
               ),
             ],
           ),
@@ -363,14 +405,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(15),
         border: Border.all(color: _line),
       ),
       child: const Row(
         children: [
           Icon(
             Icons.favorite_rounded,
-            color: Color(0xFFE58DA8),
+            color: _pink,
             size: 23,
           ),
           SizedBox(width: 12),
@@ -378,7 +420,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Text(
               'Pelan-pelan tidak apa-apa, yang penting tetap melangkah.',
               style: TextStyle(
-                color: _biruTua,
+                color: _darkPlum,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -414,21 +456,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
         ),
         title: Text(
           title,
           style: const TextStyle(
-            color: _biruTua,
-            fontWeight: FontWeight.w600,
+            color: _darkPlum,
+            fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
           message,
           style: const TextStyle(
-            color: _abu,
-            height: 1.5,
+            color: _muted,
+            height: 1.6,
+            fontSize: 13,
           ),
         ),
         actions: [
@@ -436,7 +480,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Tutup',
-              style: TextStyle(color: _biru),
+              style: TextStyle(
+                color: _plum,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -502,13 +549,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title: const Text(
           'Pengaturan',
           style: TextStyle(
-            color: _biruTua,
-            fontWeight: FontWeight.w600,
-            fontSize: 19,
+            color: _darkPlum,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
         iconTheme: const IconThemeData(
-          color: _biruTua,
+          color: _darkPlum,
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1),
@@ -522,50 +569,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: isLoading
           ? const Center(
               child: CircularProgressIndicator(
-                color: _biru,
+                color: _plum,
               ),
             )
           : ListView(
               padding: const EdgeInsets.all(18),
               children: [
-                const Text(
-                  'Preferensi Aplikasi',
-                  style: TextStyle(
-                    color: _biruTua,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      width: 4,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: _pink,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    const SizedBox(width: 9),
+                    const Text(
+                      'Preferensi Aplikasi',
+                      style: TextStyle(
+                        color: _darkPlum,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
 
-                const SizedBox(height: 13),
+                const SizedBox(height: 15),
 
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: _line),
                   ),
                   child: Column(
                     children: [
                       SwitchListTile(
-                        activeThumbColor: _biru,
+                        activeThumbColor: _plum,
                         secondary: Container(
-                          width: 40,
-                          height: 40,
+                          width: 42,
+                          height: 42,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEAF2FC),
-                            borderRadius: BorderRadius.circular(10),
+                            color: _softLavender,
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
                             Icons.notifications_active_outlined,
-                            color: _biru,
+                            color: _plum,
                             size: 21,
                           ),
                         ),
                         title: const Text(
                           'Notifikasi',
                           style: TextStyle(
-                            color: _biruTua,
+                            color: _darkPlum,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
@@ -573,7 +633,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         subtitle: const Text(
                           'Aktifkan notifikasi StudyMate',
                           style: TextStyle(
-                            color: _abu,
+                            color: _muted,
                             fontSize: 12,
                           ),
                         ),
@@ -598,24 +658,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
 
                       SwitchListTile(
-                        activeThumbColor: _biru,
+                        activeThumbColor: _plum,
                         secondary: Container(
-                          width: 40,
-                          height: 40,
+                          width: 42,
+                          height: 42,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF0ECFC),
-                            borderRadius: BorderRadius.circular(10),
+                            color: _softPink,
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
                             Icons.alarm_on_outlined,
-                            color: Color(0xFF8870CE),
+                            color: _pink,
                             size: 21,
                           ),
                         ),
                         title: const Text(
                           'Pengingat Deadline',
                           style: TextStyle(
-                            color: _biruTua,
+                            color: _darkPlum,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
@@ -623,7 +683,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         subtitle: const Text(
                           'Mengingatkan tugas mendekati deadline',
                           style: TextStyle(
-                            color: _abu,
+                            color: _muted,
                             fontSize: 12,
                           ),
                         ),

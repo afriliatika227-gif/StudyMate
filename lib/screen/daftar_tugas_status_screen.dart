@@ -2,6 +2,15 @@
 import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
 
+const Color _plum = Color(0xFF66527F);
+const Color _darkPlum = Color(0xFF423650);
+const Color _background = Color(0xFFFAF8FC);
+const Color _line = Color(0xFFEAE5EF);
+const Color _muted = Color(0xFF8B8494);
+const Color _green = Color(0xFF36A875);
+const Color _orange = Color(0xFFE6A34D);
+const Color _pink = Color(0xFFD7799E);
+
 class DaftarTugasStatusScreen extends StatefulWidget {
   final String status;
 
@@ -22,15 +31,49 @@ class _DaftarTugasStatusScreenState
   List<Map<String, dynamic>> _daftarTugas = [];
   bool _sedangMemuat = true;
 
-  static const Color _biru = Color(0xFF3478C8);
-  static const Color _biruTua = Color(0xFF344054);
-  static const Color _background = Color(0xFFF5F7FA);
-  static const Color _line = Color(0xFFE4E8EF);
-  static const Color _abu = Color(0xFF7C8798);
+  Color _warnaStatus() {
+    switch (widget.status) {
+      case 'Selesai':
+        return _green;
+      case 'Sedang Dikerjakan':
+        return _plum;
+      default:
+        return _orange;
+    }
+  }
 
-  static const Color _hijau = Color(0xFF36A875);
-  static const Color _oranye = Color(0xFFE39A42);
-  static const Color _pink = Color(0xFFD7799E);
+  Color _warnaLatarStatus() {
+    switch (widget.status) {
+      case 'Selesai':
+        return const Color(0xFFE8F5EF);
+      case 'Sedang Dikerjakan':
+        return const Color(0xFFF0EBF7);
+      default:
+        return const Color(0xFFFFF1E5);
+    }
+  }
+
+  IconData _ikonStatus() {
+    switch (widget.status) {
+      case 'Selesai':
+        return Icons.check_circle_rounded;
+      case 'Sedang Dikerjakan':
+        return Icons.autorenew_rounded;
+      default:
+        return Icons.pending_actions_rounded;
+    }
+  }
+
+  String _judulStatus() {
+    switch (widget.status) {
+      case 'Selesai':
+        return 'Tugas Selesai';
+      case 'Sedang Dikerjakan':
+        return 'Sedang Dikerjakan';
+      default:
+        return 'Belum Dikerjakan';
+    }
+  }
 
   @override
   void initState() {
@@ -63,50 +106,6 @@ class _DaftarTugasStatusScreenState
     }
   }
 
-  Color _warnaStatus() {
-    switch (widget.status) {
-      case 'Selesai':
-        return _hijau;
-      case 'Sedang Dikerjakan':
-        return _biru;
-      default:
-        return _oranye;
-    }
-  }
-
-  Color _warnaLatarStatus() {
-    switch (widget.status) {
-      case 'Selesai':
-        return const Color(0xFFE7F6EF);
-      case 'Sedang Dikerjakan':
-        return const Color(0xFFEAF2FC);
-      default:
-        return const Color(0xFFFFF3E5);
-    }
-  }
-
-  IconData _ikonStatus() {
-    switch (widget.status) {
-      case 'Selesai':
-        return Icons.check_circle_rounded;
-      case 'Sedang Dikerjakan':
-        return Icons.autorenew_rounded;
-      default:
-        return Icons.pending_actions_rounded;
-    }
-  }
-
-  String _judulStatus() {
-    switch (widget.status) {
-      case 'Selesai':
-        return 'Tugas Selesai';
-      case 'Sedang Dikerjakan':
-        return 'Sedang Dikerjakan';
-      default:
-        return 'Belum Dikerjakan';
-    }
-  }
-
   Widget _buildHeader() {
     final warna = _warnaStatus();
 
@@ -114,28 +113,42 @@ class _DaftarTugasStatusScreenState
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: _warnaLatarStatus(),
-        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          colors: [
+            _warnaLatarStatus(),
+            Colors.white,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(17),
         border: Border.all(
-          color: warna.withValues(alpha: 0.18),
+          color: warna.withValues(alpha: 0.15),
         ),
       ),
       child: Row(
         children: [
           Container(
-            width: 52,
-            height: 52,
+            width: 54,
+            height: 54,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  color: warna.withValues(alpha: 0.08),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Icon(
               _ikonStatus(),
               color: warna,
-              size: 27,
+              size: 28,
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 15),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,15 +158,16 @@ class _DaftarTugasStatusScreenState
                   style: TextStyle(
                     color: warna,
                     fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 6),
                 const Text(
                   'Pantau perkembangan tugas kuliahmu',
                   style: TextStyle(
-                    color: _abu,
+                    color: _muted,
                     fontSize: 12,
+                    height: 1.4,
                   ),
                 ),
               ],
@@ -170,9 +184,9 @@ class _DaftarTugasStatusScreenState
         const Text(
           'Daftar Tugas',
           style: TextStyle(
-            color: _biruTua,
+            color: _darkPlum,
             fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.bold,
           ),
         ),
         const Spacer(),
@@ -183,14 +197,14 @@ class _DaftarTugasStatusScreenState
           ),
           decoration: BoxDecoration(
             color: _warnaLatarStatus(),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
             '${_daftarTugas.length} Tugas',
             style: TextStyle(
               color: _warnaStatus(),
               fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -206,21 +220,30 @@ class _DaftarTugasStatusScreenState
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(15),
         border: Border.all(color: _line),
+        boxShadow: [
+          BoxShadow(
+            color: _darkPlum.withValues(alpha: 0.035),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 43,
-            height: 43,
+            width: 45,
+            height: 45,
             decoration: BoxDecoration(
               color: _warnaLatarStatus(),
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(13),
             ),
             child: Icon(
-              Icons.assignment_outlined,
+              widget.status == 'Selesai'
+                  ? Icons.task_alt_rounded
+                  : Icons.assignment_outlined,
               color: warna,
               size: 23,
             ),
@@ -233,9 +256,10 @@ class _DaftarTugasStatusScreenState
                 Text(
                   '${item['title'] ?? 'Tanpa Judul'}',
                   style: const TextStyle(
-                    color: _biruTua,
+                    color: _darkPlum,
                     fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
+                    height: 1.4,
                   ),
                 ),
                 const SizedBox(height: 7),
@@ -244,7 +268,7 @@ class _DaftarTugasStatusScreenState
                   children: [
                     const Icon(
                       Icons.menu_book_outlined,
-                      color: _abu,
+                      color: _muted,
                       size: 15,
                     ),
                     const SizedBox(width: 6),
@@ -252,22 +276,22 @@ class _DaftarTugasStatusScreenState
                       child: Text(
                         '${item['course_name'] ?? 'Mata kuliah'}',
                         style: const TextStyle(
-                          color: _abu,
+                          color: _muted,
                           fontSize: 12,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 11),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 9,
-                    vertical: 5,
+                    horizontal: 10,
+                    vertical: 6,
                   ),
                   decoration: BoxDecoration(
                     color: _warnaLatarStatus(),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     widget.status,
@@ -283,10 +307,18 @@ class _DaftarTugasStatusScreenState
           ),
           if (widget.status == 'Selesai') ...[
             const SizedBox(width: 8),
-            const Icon(
-              Icons.check_circle_rounded,
-              color: _hijau,
-              size: 23,
+            Container(
+              width: 29,
+              height: 29,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE8F5EF),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Icon(
+                Icons.check_rounded,
+                color: _green,
+                size: 20,
+              ),
             ),
           ],
         ],
@@ -304,36 +336,36 @@ class _DaftarTugasStatusScreenState
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 95,
-              height: 95,
+              width: 100,
+              height: 100,
               decoration: BoxDecoration(
                 color: _warnaLatarStatus(),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(28),
               ),
               child: Icon(
                 _ikonStatus(),
                 color: warna,
-                size: 43,
+                size: 45,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 22),
             const Text(
               'Belum Ada Tugas',
               style: TextStyle(
-                color: _biruTua,
+                color: _darkPlum,
                 fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 9),
             Text(
               'Belum ada tugas ${widget.status.toLowerCase()}.\n'
               'Yuk, tetap semangat mengatur aktivitas kuliahmu!',
               textAlign: TextAlign.center,
               style: const TextStyle(
-                color: _abu,
+                color: _muted,
                 fontSize: 13,
-                height: 1.5,
+                height: 1.6,
               ),
             ),
           ],
@@ -354,13 +386,13 @@ class _DaftarTugasStatusScreenState
         title: const Text(
           'Daftar Tugas',
           style: TextStyle(
-            color: _biruTua,
-            fontWeight: FontWeight.w600,
-            fontSize: 19,
+            color: _darkPlum,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
         iconTheme: const IconThemeData(
-          color: _biruTua,
+          color: _darkPlum,
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1),
@@ -374,11 +406,11 @@ class _DaftarTugasStatusScreenState
       body: _sedangMemuat
           ? const Center(
               child: CircularProgressIndicator(
-                color: _biru,
+                color: _plum,
               ),
             )
           : RefreshIndicator(
-              color: _biru,
+              color: _plum,
               onRefresh: _muatTugas,
               child: _daftarTugas.isEmpty
                   ? ListView(
@@ -400,9 +432,9 @@ class _DaftarTugasStatusScreenState
                       ),
                       children: [
                         _buildHeader(),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 25),
                         _buildJumlahTugas(),
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 15),
                         ..._daftarTugas.map(_buildKartuTugas),
                       ],
                     ),

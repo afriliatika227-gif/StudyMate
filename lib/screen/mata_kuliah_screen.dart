@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
 import 'tambah_mata_kuliah_screen.dart';
 
-const Color _blue = Color(0xFF3478C8);
-const Color _darkBlue = Color(0xFF344054);
-const Color _background = Color(0xFFF5F7FA);
-const Color _line = Color(0xFFE4E8EF);
-const Color _muted = Color(0xFF7C8798);
-
-const Color _softBlue = Color(0xFFEAF2FC);
-const Color _softPink = Color(0xFFFCECF2);
-const Color _softLavender = Color(0xFFF0EDFA);
-
-const Color _pinkDark = Color(0xFFD7799E);
-const Color _purpleDark = Color(0xFF8174BC);
+const Color _plum = Color(0xFF66527F);
+const Color _darkPlum = Color(0xFF423650);
+const Color _lavender = Color(0xFFEDE6F6);
+const Color _softLavender = Color(0xFFF6F2FA);
+const Color _pink = Color(0xFFD98EAD);
+const Color _softPink = Color(0xFFFAEDF2);
+const Color _peach = Color(0xFFE8AC91);
+const Color _softPeach = Color(0xFFFFF1E9);
+const Color _background = Color(0xFFFAF8FC);
+const Color _line = Color(0xFFECE6F0);
+const Color _muted = Color(0xFF92899B);
+const Color _green = Color(0xFF79A995);
 
 class MataKuliahScreen extends StatefulWidget {
   const MataKuliahScreen({super.key});
@@ -47,7 +47,6 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
       });
     } catch (e) {
       if (!mounted) return;
-
       setState(() => isLoading = false);
       _showSnackBar('Gagal memuat mata kuliah.');
     }
@@ -58,7 +57,7 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
     return Scaffold(
       backgroundColor: _background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: _background,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -66,69 +65,52 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
           onPressed: () => Navigator.pop(context),
           icon: const Icon(
             Icons.arrow_back_rounded,
-            color: _darkBlue,
+            color: _darkPlum,
           ),
         ),
         title: const Text(
           'Mata Kuliah',
           style: TextStyle(
-            color: _darkBlue,
+            color: _darkPlum,
             fontSize: 19,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(
-            height: 1,
-            thickness: 1,
-            color: _line,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
       body: isLoading
           ? const Center(
-              child: CircularProgressIndicator(color: _blue),
+              child: CircularProgressIndicator(color: _plum),
             )
           : RefreshIndicator(
-              color: _blue,
+              color: _plum,
               onRefresh: _loadMataKuliah,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 110),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 110),
                 children: [
                   _header(),
-
-                  const SizedBox(height: 27),
+                  const SizedBox(height: 25),
+                  _summary(),
+                  const SizedBox(height: 28),
 
                   Row(
                     children: [
                       const Expanded(
                         child: Text(
-                          'Daftar Mata Kuliah',
+                          'Daftar Perkuliahan',
                           style: TextStyle(
-                            color: _darkBlue,
+                            color: _darkPlum,
                             fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 11,
-                          vertical: 7,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _softBlue,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          '${mataKuliah.length} mata kuliah',
-                          style: const TextStyle(
-                            color: _blue,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      Text(
+                        '${mataKuliah.length} mata kuliah',
+                        style: const TextStyle(
+                          color: _muted,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -137,14 +119,14 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
                   const SizedBox(height: 5),
 
                   const Text(
-                    'Daftar mata kuliah yang sedang kamu pelajari.',
+                    'Semua mata kuliah yang sedang kamu pelajari.',
                     style: TextStyle(
                       color: _muted,
                       fontSize: 12,
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 17),
 
                   if (mataKuliah.isEmpty)
                     _emptyState()
@@ -162,9 +144,9 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'fab-mata-kuliah',
         onPressed: _tambahMataKuliah,
-        backgroundColor: _blue,
+        backgroundColor: _plum,
         foregroundColor: Colors.white,
-        elevation: 2,
+        elevation: 3,
         icon: const Icon(Icons.add_rounded),
         label: const Text(
           'Tambah Mata Kuliah',
@@ -177,53 +159,217 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
     );
   }
 
-  // HEADER
+  // HEADER FOTO BUKU FULL BACKGROUND
   Widget _header() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      height: 220,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: _blue,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(23),
+        boxShadow: [
+          BoxShadow(
+            color: _plum.withValues(alpha: 0.17),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(23),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // FOTO MEMENUHI SELURUH BANNER
+            Image.network(
+              'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1000',
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+              loadingBuilder: (context, child, progress) {
+                if (progress == null) return child;
+
+                return Container(
+                  color: _softLavender,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: _plum,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: _lavender,
+                  child: const Center(
+                    child: Icon(
+                      Icons.menu_book_rounded,
+                      color: _plum,
+                      size: 45,
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            // GRADASI AGAR TULISAN TERBACA
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0x12000000),
+                    Color(0x35000000),
+                    Color(0xCC241B30),
+                  ],
+                  stops: [0.0, 0.38, 1.0],
+                ),
+              ),
+            ),
+
+            // TULISAN DI ATAS FOTO
+            const Positioned(
+              left: 20,
+              right: 20,
+              bottom: 20,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Ruang Belajarmu',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 23,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black26,
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 9),
+                  Text(
+                    'Atur mata kuliah, kenali setiap materi, '
+                    'dan jalani perkuliahan dengan lebih terarah.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      height: 1.6,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black38,
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 13),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.auto_awesome_rounded,
+                        color: Color(0xFFFFD9E8),
+                        size: 15,
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        'Belajar lebih terorganisir',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // RINGKASAN
+  Widget _summary() {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(19),
+        border: Border.all(color: _line),
       ),
       child: Row(
         children: [
-          const Expanded(
+          Container(
+            width: 49,
+            height: 49,
+            decoration: BoxDecoration(
+              color: _softLavender,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: const Icon(
+              Icons.library_books_rounded,
+              color: _plum,
+              size: 25,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Mata Kuliahku',
+                const Text(
+                  'Total Mata Kuliah',
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                    color: _muted,
+                    fontSize: 11,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
-                  'Kelola daftar mata kuliah dan informasi '
-                  'perkuliahanmu di sini.',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    height: 1.5,
+                  '${mataKuliah.length} Mata Kuliah',
+                  style: const TextStyle(
+                    color: _darkPlum,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 12),
           Container(
-            width: 57,
-            height: 57,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(12),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 11,
+              vertical: 8,
             ),
-            child: const Icon(
-              Icons.menu_book_rounded,
-              color: Colors.white,
-              size: 30,
+            decoration: BoxDecoration(
+              color: _softPink,
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: const Row(
+              children: [
+                Icon(
+                  Icons.bookmark_rounded,
+                  size: 13,
+                  color: _pink,
+                ),
+                SizedBox(width: 5),
+                Text(
+                  'Akademik',
+                  style: TextStyle(
+                    color: _pink,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -237,46 +383,46 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
       margin: const EdgeInsets.only(top: 5),
       padding: const EdgeInsets.symmetric(
         horizontal: 22,
-        vertical: 32,
+        vertical: 35,
       ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: _line),
       ),
       child: Column(
         children: [
           Container(
-            width: 68,
-            height: 68,
+            width: 75,
+            height: 75,
             decoration: BoxDecoration(
-              color: _softBlue,
-              borderRadius: BorderRadius.circular(18),
+              color: _softLavender,
+              borderRadius: BorderRadius.circular(23),
             ),
             child: const Icon(
-              Icons.menu_book_outlined,
-              color: _blue,
-              size: 34,
+              Icons.menu_book_rounded,
+              color: _plum,
+              size: 37,
             ),
           ),
-          const SizedBox(height: 17),
+          const SizedBox(height: 18),
           const Text(
             'Belum Ada Mata Kuliah',
             style: TextStyle(
-              color: _darkBlue,
+              color: _darkPlum,
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 8),
           const Text(
-            'Tambahkan mata kuliah pertamamu untuk '
-            'mulai mengatur aktivitas perkuliahan.',
+            'Yuk, tambahkan mata kuliahmu agar semua '
+            'aktivitas perkuliahan lebih mudah diatur.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: _muted,
               fontSize: 12,
-              height: 1.5,
+              height: 1.6,
             ),
           ),
         ],
@@ -289,67 +435,78 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
     required int index,
     required Map<String, dynamic> mk,
   }) {
-    final accent = index % 3 == 0
-        ? _blue
-        : index % 3 == 1
-            ? _pinkDark
-            : _purpleDark;
+    final colors = [
+      _plum,
+      _pink,
+      _peach,
+      _green,
+    ];
 
-    final tileColor = index % 3 == 0
-        ? _softBlue
-        : index % 3 == 1
-            ? _softPink
-            : _softLavender;
+    final backgrounds = [
+      _softLavender,
+      _softPink,
+      _softPeach,
+      const Color(0xFFEDF6F1),
+    ];
+
+    final accent = colors[index % colors.length];
+    final tileColor = backgrounds[index % backgrounds.length];
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 13),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(color: _line),
+        boxShadow: [
+          BoxShadow(
+            color: _darkPlum.withValues(alpha: 0.035),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(18),
         child: InkWell(
           onTap: () => _lihatDetail(index),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(18),
           child: Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(16),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 47,
-                  height: 47,
+                  width: 51,
+                  height: 56,
                   decoration: BoxDecoration(
                     color: tileColor,
-                    borderRadius: BorderRadius.circular(11),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   child: Icon(
                     Icons.menu_book_rounded,
                     color: accent,
-                    size: 24,
+                    size: 26,
                   ),
                 ),
-
-                const SizedBox(width: 13),
-
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         (mk['course_name'] ?? 'Tanpa nama').toString(),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: _darkBlue,
+                          color: _darkPlum,
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
+                          height: 1.35,
                         ),
                       ),
-
                       const SizedBox(height: 5),
-
                       Text(
                         (mk['course_code'] ?? '-').toString(),
                         style: const TextStyle(
@@ -357,29 +514,20 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
                           fontSize: 11,
                         ),
                       ),
-
                       const SizedBox(height: 10),
-
-                      _infoChip(
-                        Icons.calendar_month_outlined,
-                        'Semester ${mk['semester'] ?? '-'}',
-                        color: accent,
-                        background: tileColor,
-                      ),
-
-                      const SizedBox(height: 10),
-
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.person_outline_rounded,
-                            size: 15,
-                            color: _muted,
+                            size: 14,
+                            color: accent,
                           ),
                           const SizedBox(width: 5),
                           Expanded(
                             child: Text(
                               (mk['lecturer_name'] ?? '-').toString(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: _muted,
                                 fontSize: 11,
@@ -388,12 +536,29 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 9),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 9,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: tileColor,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'Semester ${mk['semester'] ?? '-'}',
+                          style: TextStyle(
+                            color: accent,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-
-                const SizedBox(width: 3),
-
+                const SizedBox(width: 5),
                 const Icon(
                   Icons.chevron_right_rounded,
                   color: _muted,
@@ -403,40 +568,6 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  // LABEL SEMESTER
-  Widget _infoChip(
-    IconData icon,
-    String text, {
-    required Color color,
-    required Color background,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 9,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(7),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 13, color: color),
-          const SizedBox(width: 5),
-          Text(
-            text,
-            style: TextStyle(
-              color: color,
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -451,15 +582,25 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
         ),
-        title: const Text(
-          'Detail Mata Kuliah',
-          style: TextStyle(
-            color: _darkBlue,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.menu_book_rounded,
+              color: _plum,
+              size: 23,
+            ),
+            SizedBox(width: 9),
+            Text(
+              'Detail Mata Kuliah',
+              style: TextStyle(
+                color: _darkPlum,
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
         content: SingleChildScrollView(
           child: Column(
@@ -484,17 +625,17 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
             ],
           ),
         ),
-        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+        actionsPadding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
         actions: [
           TextButton.icon(
             onPressed: () {
               Navigator.pop(dialogContext);
               _editMataKuliah(index);
             },
-            icon: const Icon(Icons.edit_outlined, size: 17),
+            icon: const Icon(Icons.edit_outlined, size: 16),
             label: const Text('Edit'),
             style: TextButton.styleFrom(
-              foregroundColor: _blue,
+              foregroundColor: _plum,
             ),
           ),
           TextButton.icon(
@@ -502,10 +643,13 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
               Navigator.pop(dialogContext);
               _konfirmasiHapus(index);
             },
-            icon: const Icon(Icons.delete_outline_rounded, size: 17),
+            icon: const Icon(
+              Icons.delete_outline_rounded,
+              size: 16,
+            ),
             label: const Text('Hapus'),
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red.shade600,
+              foregroundColor: Colors.red,
             ),
           ),
           TextButton(
@@ -527,9 +671,8 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _background,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: _line),
+        color: _softLavender,
+        borderRadius: BorderRadius.circular(11),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -545,9 +688,9 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
           Text(
             value,
             style: const TextStyle(
-              color: _darkBlue,
+              color: _darkPlum,
               fontSize: 13,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -637,14 +780,14 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(19),
         ),
         title: const Text(
           'Hapus Mata Kuliah?',
           style: TextStyle(
-            color: _darkBlue,
+            color: _darkPlum,
             fontSize: 17,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
         content: Text(
@@ -666,11 +809,11 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFFD95C65),
+              backgroundColor: const Color(0xFFD56F8F),
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(9),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
             onPressed: () => Navigator.pop(dialogContext, true),
@@ -705,9 +848,9 @@ class _MataKuliahScreenState extends State<MataKuliahScreen> {
           content: Text(message),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
           ),
-          backgroundColor: _darkBlue,
+          backgroundColor: _darkPlum,
         ),
       );
   }

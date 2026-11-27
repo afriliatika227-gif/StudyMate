@@ -1,14 +1,16 @@
 
 import 'package:flutter/material.dart';
 
-const Color _blue = Color(0xFF3478C8);
-const Color _darkBlue = Color(0xFF344054);
-const Color _background = Color(0xFFF5F7FA);
-const Color _line = Color(0xFFE4E8EF);
-const Color _muted = Color(0xFF7C8798);
-const Color _softBlue = Color(0xFFEAF2FC);
-const Color _softPink = Color(0xFFFCECF2);
-const Color _pink = Color(0xFFD7799E);
+const Color _plum = Color(0xFF66527F);
+const Color _darkPlum = Color(0xFF423650);
+const Color _lavender = Color(0xFF806C9C);
+const Color _softLavender = Color(0xFFF0EBF6);
+const Color _pink = Color(0xFFD995B2);
+const Color _softPink = Color(0xFFFAEFF4);
+const Color _background = Color(0xFFFAF8FC);
+const Color _line = Color(0xFFEAE5EF);
+const Color _muted = Color(0xFF91899B);
+const Color _softGreen = Color(0xFFEDF5F0);
 
 class TambahJadwalScreen extends StatefulWidget {
   final Map<String, String>? jadwalAwal;
@@ -122,6 +124,8 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
     IconData ikon, {
     bool pink = false,
   }) {
+    final warna = pink ? _pink : _plum;
+
     return InputDecoration(
       hintText: petunjuk,
       hintStyle: const TextStyle(
@@ -131,27 +135,27 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
       ),
       prefixIcon: Icon(
         ikon,
-        color: pink ? _pink : _blue,
+        color: warna,
         size: 20,
       ),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: const Color(0xFFFCFBFD),
       contentPadding: const EdgeInsets.symmetric(
-        horizontal: 13,
-        vertical: 15,
+        horizontal: 14,
+        vertical: 16,
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(13),
         borderSide: const BorderSide(color: _line),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(13),
         borderSide: const BorderSide(color: _line),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(13),
         borderSide: const BorderSide(
-          color: _blue,
+          color: _plum,
           width: 1.5,
         ),
       ),
@@ -164,9 +168,9 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
       child: Text(
         teks,
         style: const TextStyle(
-          color: _darkBlue,
+          color: _darkPlum,
           fontSize: 13,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -184,10 +188,10 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: _blue,
+              primary: _plum,
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: _darkBlue,
+              onSurface: _darkPlum,
             ),
           ),
           child: child!,
@@ -212,37 +216,34 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
     bool mulai,
   ) {
     final terisi = waktu != null;
-    final warna = mulai ? _blue : _pink;
-    final latar = mulai ? _softBlue : _softPink;
+    final warna = mulai ? _plum : _pink;
+    final latar = mulai ? _softLavender : _softPink;
 
     return InkWell(
       onTap: () => _pilihWaktu(mulai),
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(14),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 11,
-          vertical: 14,
-        ),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
-            color: terisi ? warna.withValues(alpha: 0.6) : _line,
+            color: terisi ? warna.withValues(alpha: 0.55) : _line,
           ),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
           children: [
             Container(
-              width: 34,
-              height: 34,
+              width: 38,
+              height: 38,
               decoration: BoxDecoration(
                 color: latar,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(11),
               ),
               child: Icon(
                 Icons.access_time_rounded,
                 color: warna,
-                size: 18,
+                size: 19,
               ),
             ),
             const SizedBox(width: 9),
@@ -257,17 +258,22 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
                       fontSize: 10,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 5),
                   Text(
                     terisi ? waktu.format(context) : 'Pilih jam',
                     style: TextStyle(
-                      color: terisi ? _darkBlue : _muted,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                      color: terisi ? _darkPlum : _muted,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
               ),
+            ),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: warna,
+              size: 19,
             ),
           ],
         ),
@@ -326,13 +332,13 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
-        foregroundColor: _darkBlue,
+        foregroundColor: _darkPlum,
         title: Text(
           sedangEdit ? 'Edit Jadwal' : 'Tambah Jadwal',
           style: const TextStyle(
-            color: _darkBlue,
-            fontSize: 19,
-            fontWeight: FontWeight.w600,
+            color: _darkPlum,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
           ),
         ),
         bottom: const PreferredSize(
@@ -346,55 +352,70 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+          padding: const EdgeInsets.fromLTRB(18, 18, 18, 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _header(),
-              const SizedBox(height: 24),
+
+              const SizedBox(height: 26),
+
               const Text(
                 'Informasi Jadwal',
                 style: TextStyle(
-                  color: _darkBlue,
+                  color: _darkPlum,
                   fontSize: 17,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
+
               const SizedBox(height: 5),
+
               const Text(
-                'Lengkapi informasi perkuliahan berikut.',
+                'Atur detail perkuliahanmu dengan mudah.',
                 style: TextStyle(
                   color: _muted,
                   fontSize: 12,
                 ),
               ),
-              const SizedBox(height: 18),
+
+              const SizedBox(height: 17),
+
               Container(
-                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                padding: const EdgeInsets.all(17),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(19),
                   border: Border.all(color: _line),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _plum.withValues(alpha: 0.045),
+                      blurRadius: 18,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _label('Mata Kuliah'),
+
                     DropdownButtonFormField<String>(
                       initialValue: mataKuliah,
                       isExpanded: true,
                       decoration: _dekorasi(
                         'Pilih mata kuliah',
-                        Icons.menu_book_outlined,
+                        Icons.menu_book_rounded,
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(13),
                       items: daftarMataKuliah.map((nama) {
                         return DropdownMenuItem<String>(
                           value: nama,
                           child: Text(
                             nama,
                             style: const TextStyle(
-                              color: _darkBlue,
+                              color: _darkPlum,
                               fontSize: 13,
                             ),
                           ),
@@ -404,24 +425,27 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
                         setState(() => mataKuliah = nilai);
                       },
                     ),
-                    const SizedBox(height: 20),
+
+                    const SizedBox(height: 21),
+
                     _label('Hari Perkuliahan'),
+
                     DropdownButtonFormField<String>(
                       initialValue: hari,
                       isExpanded: true,
                       decoration: _dekorasi(
                         'Pilih hari',
-                        Icons.calendar_today_outlined,
+                        Icons.calendar_today_rounded,
                         pink: true,
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(13),
                       items: daftarHari.map((nama) {
                         return DropdownMenuItem<String>(
                           value: nama,
                           child: Text(
                             nama,
                             style: const TextStyle(
-                              color: _darkBlue,
+                              color: _darkPlum,
                               fontSize: 13,
                             ),
                           ),
@@ -433,8 +457,11 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
                         }
                       },
                     ),
-                    const SizedBox(height: 20),
+
+                    const SizedBox(height: 21),
+
                     _label('Waktu Perkuliahan'),
+
                     Row(
                       children: [
                         Expanded(
@@ -454,56 +481,95 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+
+                    const SizedBox(height: 21),
+
                     _label('Ruangan'),
+
                     TextField(
                       controller: ruanganController,
                       textCapitalization: TextCapitalization.words,
                       decoration: _dekorasi(
                         'Contoh: Gedung H, Ruang 301',
-                        Icons.location_on_outlined,
+                        Icons.location_on_rounded,
                         pink: true,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+
+              const SizedBox(height: 17),
+
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: _softGreen,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.lightbulb_outline_rounded,
+                      color: Color(0xFF648A72),
+                      size: 19,
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Pastikan waktu dan ruangan sudah sesuai agar jadwal kuliahmu tidak bertabrakan.',
+                        style: TextStyle(
+                          color: Color(0xFF587563),
+                          fontSize: 11,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 23),
+
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 53,
                 child: ElevatedButton.icon(
                   onPressed: _simpan,
                   icon: Icon(
                     sedangEdit
                         ? Icons.check_rounded
-                        : Icons.save_outlined,
-                    size: 20,
+                        : Icons.save_rounded,
+                    size: 19,
                   ),
                   label: Text(
                     sedangEdit ? 'Simpan Perubahan' : 'Simpan Jadwal',
                     style: const TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _blue,
+                    backgroundColor: _plum,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+
+              const SizedBox(height: 15),
+
               Center(
                 child: Text(
                   'StudyMate • Academic Management',
                   style: TextStyle(
-                    color: Colors.blueGrey.shade400,
+                    color: Colors.blueGrey.shade300,
                     fontSize: 10,
+                    letterSpacing: 0.3,
                   ),
                 ),
               ),
@@ -517,53 +583,125 @@ class _TambahJadwalScreenState extends State<TambahJadwalScreen> {
   Widget _header() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(19),
+      height: 180,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: _blue,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          colors: [_lavender, _darkPlum],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _plum.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 7),
+          ),
+        ],
       ),
-      child: Row(
+      child: Stack(
+        fit: StackFit.expand,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  sedangEdit ? 'Perbarui Jadwal' : 'Jadwal Baru',
-                  style: const TextStyle(
+          Image.network(
+            'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800',
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, progress) {
+              if (progress == null) return child;
+
+              return Container(
+                color: _lavender,
+                child: const Center(
+                  child: CircularProgressIndicator(
                     color: Colors.white,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
+                    strokeWidth: 2,
                   ),
                 ),
-                const SizedBox(height: 7),
-                Text(
-                  sedangEdit
-                      ? 'Perbarui informasi jadwal perkuliahanmu.'
-                      : 'Atur waktu kuliah agar aktivitas akademik lebih teratur.',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    height: 1.5,
-                  ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: _lavender,
+                child: const Icon(
+                  Icons.calendar_month_rounded,
+                  color: Colors.white54,
+                  size: 55,
                 ),
-              ],
+              );
+            },
+          ),
+
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  _darkPlum.withValues(alpha: 0.88),
+                  _darkPlum.withValues(alpha: 0.42),
+                  Colors.transparent,
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
             ),
           ),
-          const SizedBox(width: 10),
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: Icon(
-              sedangEdit
-                  ? Icons.edit_calendar_outlined
-                  : Icons.calendar_month_outlined,
-              color: Colors.white,
-              size: 27,
+
+          Padding(
+            padding: const EdgeInsets.all(21),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: 215,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        'STUDYMATE PLANNER',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.1,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 13),
+
+                    Text(
+                      sedangEdit ? 'Perbarui Jadwal' : 'Jadwal Baru',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      sedangEdit
+                          ? 'Perbarui informasi perkuliahanmu agar tetap teratur.'
+                          : 'Susun jadwal kuliah dan buat aktivitas akademikmu lebih terencana.',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],

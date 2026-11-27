@@ -6,14 +6,14 @@ import '../services/notification_service.dart';
 import 'tambah_tugas_screen.dart';
 import 'daftar_tugas_status_screen.dart';
 
-const Color _blue = Color(0xFF3478C8);
-const Color _darkBlue = Color(0xFF344054);
-const Color _background = Color(0xFFF5F7FA);
-const Color _line = Color(0xFFE4E8EF);
-const Color _muted = Color(0xFF7C8798);
+const Color _blue = Color(0xFF66527F);
+const Color _darkBlue = Color(0xFF423650);
+const Color _background = Color(0xFFFAF8FC);
+const Color _line = Color(0xFFEAE5EF);
+const Color _muted = Color(0xFF8A8193);
 
-const Color _softBlue = Color(0xFFEAF2FC);
-const Color _softPink = Color(0xFFFCECF2);
+const Color _softBlue = Color(0xFFF0EBF7);
+const Color _softPink = Color(0xFFFFF0F5);
 const Color _softMint = Color(0xFFE8F5EF);
 const Color _softPeach = Color(0xFFFFF1E5);
 
@@ -688,26 +688,93 @@ class _TugasScreenState extends State<TugasScreen> {
     );
   }
 
+  // HEADER DENGAN FOTO NYATA
   Widget _headerTugas() {
     return Container(
+      height: 190,
       width: double.infinity,
-      padding: const EdgeInsets.all(19),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: _blue,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(18),
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF806C9C),
+            Color(0xFF423650),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
-      child: Row(
+      child: Stack(
         children: [
-          Expanded(
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=900',
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, progress) {
+                if (progress == null) return child;
+
+                return Container(
+                  color: _blue,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Container(color: _blue);
+              },
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF423650).withValues(alpha: 0.92),
+                    const Color(0xFF423650).withValues(alpha: 0.40),
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 11,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    'STUDYMATE • MY TASKS',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 9,
+                      letterSpacing: 1.2,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 13),
                 const Text(
                   'Kelola Tugas Kuliah',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 21,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 7),
@@ -721,15 +788,18 @@ class _TugasScreenState extends State<TugasScreen> {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 13),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 11,
+                    horizontal: 12,
                     vertical: 7,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.17),
+                    color: Colors.white.withValues(alpha: 0.20),
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.25),
+                    ),
                   ),
                   child: Text(
                     '${tugas.length} tugas tercatat',
@@ -741,20 +811,6 @@ class _TugasScreenState extends State<TugasScreen> {
                   ),
                 ),
               ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Container(
-            width: 54,
-            height: 54,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.assignment_outlined,
-              color: Colors.white,
-              size: 29,
             ),
           ),
         ],
@@ -968,17 +1024,25 @@ class _TugasScreenState extends State<TugasScreen> {
       ),
       child: Column(
         children: [
-          Container(
-            width: 68,
-            height: 68,
-            decoration: BoxDecoration(
-              color: _softBlue,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: const Icon(
-              Icons.assignment_outlined,
-              color: _blue,
-              size: 34,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: Image.network(
+              'https://images.unsplash.com/photo-1517842645767-c639042777db?w=400',
+              width: 105,
+              height: 85,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 105,
+                  height: 85,
+                  color: _softBlue,
+                  child: const Icon(
+                    Icons.assignment_outlined,
+                    color: _blue,
+                    size: 35,
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(height: 16),
@@ -1019,6 +1083,7 @@ class _TugasScreenState extends State<TugasScreen> {
     );
   }
 
+  // KARTU TUGAS DENGAN FOTO NYATA
   Widget _tugasCard({
     required int index,
     required String judul,
@@ -1037,21 +1102,28 @@ class _TugasScreenState extends State<TugasScreen> {
         deadlineDate.isBefore(DateTime.now());
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 13),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: terlambat
               ? const Color(0xFFF0CCCC)
               : _line,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF423650).withValues(alpha: 0.035),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(15),
         child: InkWell(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(15),
           onTap: () => _detailTugas(index),
           child: Padding(
             padding: const EdgeInsets.all(14),
@@ -1061,20 +1133,28 @@ class _TugasScreenState extends State<TugasScreen> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 43,
-                      height: 43,
-                      decoration: BoxDecoration(
-                        color: _softBlue,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(
-                        Icons.assignment_outlined,
-                        color: _blue,
-                        size: 23,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(11),
+                      child: Image.network(
+                        'https://images.unsplash.com/photo-1517842645767-c639042777db?w=300',
+                        width: 65,
+                        height: 65,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: 65,
+                            height: 65,
+                            color: _softBlue,
+                            child: const Icon(
+                              Icons.menu_book_rounded,
+                              color: _blue,
+                              size: 27,
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    const SizedBox(width: 11),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1086,8 +1166,8 @@ class _TugasScreenState extends State<TugasScreen> {
                             style: const TextStyle(
                               color: _darkBlue,
                               fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              height: 1.35,
+                              fontWeight: FontWeight.w700,
+                              height: 1.4,
                             ),
                           ),
                           const SizedBox(height: 6),
@@ -1100,43 +1180,80 @@ class _TugasScreenState extends State<TugasScreen> {
                               fontSize: 11,
                             ),
                           ),
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 9,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: latarStatus,
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: warna,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  status,
+                                  style: TextStyle(
+                                    color: warna,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 5),
                     const Icon(
                       Icons.chevron_right_rounded,
                       color: _muted,
-                      size: 21,
+                      size: 22,
                     ),
                   ],
                 ),
                 const SizedBox(height: 14),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(11),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 11,
+                  ),
                   decoration: BoxDecoration(
                     color: terlambat
                         ? const Color(0xFFFFF0F0)
                         : _background,
-                    borderRadius: BorderRadius.circular(9),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         terlambat
                             ? Icons.warning_amber_rounded
-                            : Icons.calendar_today_outlined,
-                        size: 17,
+                            : Icons.calendar_month_rounded,
+                        size: 18,
                         color: terlambat ? _red : _blue,
                       ),
-                      const SizedBox(width: 9),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              terlambat ? 'Deadline terlewat' : 'Deadline',
+                              terlambat
+                                  ? 'Deadline terlewat'
+                                  : 'Batas Pengumpulan',
                               style: TextStyle(
                                 color: terlambat ? _red : _muted,
                                 fontSize: 10,
@@ -1156,54 +1273,16 @@ class _TugasScreenState extends State<TugasScreen> {
                           ],
                         ),
                       ),
+                      const Text(
+                        'Detail',
+                        style: TextStyle(
+                          color: _blue,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 9,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: latarStatus,
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: warna,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            status,
-                            style: TextStyle(
-                              color: warna,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
-                    const Text(
-                      'Lihat detail',
-                      style: TextStyle(
-                        color: _blue,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),

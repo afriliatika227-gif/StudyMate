@@ -6,12 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const Color _biru = Color(0xFF3478C8);
-const Color _biruTua = Color(0xFF344054);
-const Color _background = Color(0xFFF5F7FA);
-const Color _line = Color(0xFFE4E8EF);
-const Color _abu = Color(0xFF7C8798);
-const Color _lavender = Color(0xFF8870CE);
+const Color _plum = Color(0xFF66527F);
+const Color _darkPlum = Color(0xFF423650);
+const Color _background = Color(0xFFFAF8FC);
+const Color _line = Color(0xFFEAE5EF);
+const Color _muted = Color(0xFF8B8494);
+const Color _pink = Color(0xFFD7799E);
+const Color _softLavender = Color(0xFFF0EBF7);
+const Color _softPink = Color(0xFFFFF0F5);
+const Color _softMint = Color(0xFFE8F5EF);
+const Color _softPeach = Color(0xFFFFF1E5);
 
 const List<String> _semesterOptions = [
   'Semester 1',
@@ -187,7 +191,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
       return const Scaffold(
         backgroundColor: _background,
         body: Center(
-          child: CircularProgressIndicator(color: _biru),
+          child: CircularProgressIndicator(color: _plum),
         ),
       );
     }
@@ -202,12 +206,12 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
         title: const Text(
           'Data Diri',
           style: TextStyle(
-            color: _biruTua,
-            fontWeight: FontWeight.w600,
-            fontSize: 19,
+            color: _darkPlum,
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
           ),
         ),
-        iconTheme: const IconThemeData(color: _biruTua),
+        iconTheme: const IconThemeData(color: _darkPlum),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1),
           child: Divider(
@@ -218,49 +222,49 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(18, 20, 18, 30),
+        padding: const EdgeInsets.fromLTRB(20, 22, 20, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildProfileHeader(),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 28),
 
             const Text(
               'Informasi Pribadi',
               style: TextStyle(
-                color: _biruTua,
+                color: _darkPlum,
                 fontSize: 17,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
 
             const SizedBox(height: 5),
 
             const Text(
-              'Berikut adalah informasi data dirimu.',
+              'Informasi akun dan identitas akademikmu.',
               style: TextStyle(
-                color: _abu,
+                color: _muted,
                 fontSize: 12,
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 17),
 
             _buildInfoCard(
               icon: Icons.person_outline_rounded,
               title: 'Nama Lengkap',
               value: nama,
-              iconColor: _biru,
-              iconBackground: const Color(0xFFEAF2FC),
+              iconColor: _plum,
+              iconBackground: _softLavender,
             ),
 
             _buildInfoCard(
               icon: Icons.badge_outlined,
-              title: 'NPM',
+              title: 'Nomor Pokok Mahasiswa',
               value: npm,
-              iconColor: const Color(0xFF8870CE),
-              iconBackground: const Color(0xFFF0ECFC),
+              iconColor: _pink,
+              iconBackground: _softPink,
             ),
 
             _buildInfoCard(
@@ -268,7 +272,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
               title: 'Program Studi',
               value: programStudi,
               iconColor: const Color(0xFF36A875),
-              iconBackground: const Color(0xFFE7F6EF),
+              iconBackground: _softMint,
             ),
 
             _buildInfoCard(
@@ -276,21 +280,21 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
               title: 'Semester',
               value: semester,
               iconColor: const Color(0xFFE39A42),
-              iconBackground: const Color(0xFFFFF3E5),
+              iconBackground: _softPeach,
             ),
 
             _buildInfoCard(
               icon: Icons.email_outlined,
               title: 'Email',
               value: email,
-              iconColor: const Color(0xFFD7799E),
-              iconBackground: const Color(0xFFFCECF2),
+              iconColor: _pink,
+              iconBackground: _softPink,
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
 
             SizedBox(
-              height: 50,
+              height: 52,
               child: ElevatedButton.icon(
                 onPressed: _bukaEditDataDiri,
                 icon: const Icon(
@@ -301,15 +305,15 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
                   'Edit Data Diri',
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _biru,
+                  backgroundColor: _plum,
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                 ),
               ),
@@ -324,75 +328,92 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 20,
-        vertical: 24,
+        vertical: 27,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF2FC),
-        borderRadius: BorderRadius.circular(17),
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFFF0EBF7),
+            Color(0xFFFFF0F5),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(21),
         border: Border.all(
-          color: const Color(0xFFD8E7F8),
+          color: const Color(0xFFEAE1F0),
         ),
       ),
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(4),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: _plum.withValues(alpha: 0.10),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
             child: CircleAvatar(
-              radius: 48,
-              backgroundColor: const Color(0xFFDCEBFC),
+              radius: 49,
+              backgroundColor: _softLavender,
               backgroundImage:
                   fotoProfil != null ? MemoryImage(fotoProfil!) : null,
               child: fotoProfil == null
                   ? const Icon(
                       Icons.person_rounded,
-                      size: 52,
-                      color: _biru,
+                      size: 53,
+                      color: _plum,
                     )
                   : null,
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 17),
 
           Text(
             nama,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 21,
-              fontWeight: FontWeight.w600,
-              color: _biruTua,
+              fontWeight: FontWeight.w800,
+              color: _darkPlum,
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 11),
 
           Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: 13,
-              vertical: 6,
+              horizontal: 14,
+              vertical: 7,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(7),
+              color: Colors.white.withValues(alpha: 0.85),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: Colors.white,
+              ),
             ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  Icons.school_outlined,
+                  Icons.school_rounded,
                   size: 15,
-                  color: _biru,
+                  color: _plum,
                 ),
                 SizedBox(width: 6),
                 Text(
                   'Mahasiswa',
                   style: TextStyle(
-                    color: _biru,
-                    fontWeight: FontWeight.w600,
+                    color: _plum,
+                    fontWeight: FontWeight.w700,
                     fontSize: 12,
                   ),
                 ),
@@ -400,13 +421,14 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 13),
 
           Text(
             npm,
             style: const TextStyle(
-              color: _biruTua,
+              color: _muted,
               fontSize: 13,
+              fontWeight: FontWeight.w600,
               letterSpacing: 1,
             ),
           ),
@@ -423,21 +445,31 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
     required Color iconBackground,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 11),
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+        vertical: 15,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(13),
+        borderRadius: BorderRadius.circular(15),
         border: Border.all(color: _line),
+        boxShadow: [
+          BoxShadow(
+            color: _darkPlum.withValues(alpha: 0.025),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 45,
+            height: 45,
             decoration: BoxDecoration(
               color: iconBackground,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(13),
             ),
             child: Icon(
               icon,
@@ -446,7 +478,7 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
             ),
           ),
 
-          const SizedBox(width: 13),
+          const SizedBox(width: 14),
 
           Expanded(
             child: Column(
@@ -455,8 +487,8 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
                 Text(
                   title,
                   style: const TextStyle(
-                    color: _abu,
-                    fontSize: 12,
+                    color: _muted,
+                    fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -464,9 +496,10 @@ class _DataDiriScreenState extends State<DataDiriScreen> {
                 Text(
                   value,
                   style: const TextStyle(
-                    color: _biruTua,
+                    color: _darkPlum,
                     fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
+                    height: 1.35,
                   ),
                 ),
               ],
@@ -620,32 +653,32 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
     return InputDecoration(
       labelText: label,
       labelStyle: const TextStyle(
-        color: _abu,
+        color: _muted,
         fontSize: 13,
       ),
       prefixIcon: Icon(
         icon,
-        color: _biru,
+        color: _plum,
         size: 21,
       ),
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 15,
+        horizontal: 15,
+        vertical: 16,
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(color: _line),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(color: _line),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(
-          color: _biru,
+          color: _plum,
           width: 1.5,
         ),
       ),
@@ -664,12 +697,12 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
         title: const Text(
           'Edit Data Diri',
           style: TextStyle(
-            color: _biruTua,
-            fontWeight: FontWeight.w600,
-            fontSize: 19,
+            color: _darkPlum,
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
           ),
         ),
-        iconTheme: const IconThemeData(color: _biruTua),
+        iconTheme: const IconThemeData(color: _darkPlum),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1),
           child: Divider(
@@ -680,32 +713,39 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(18, 22, 18, 30),
+        padding: const EdgeInsets.fromLTRB(20, 23, 20, 32),
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: _plum.withValues(alpha: 0.09),
+                    blurRadius: 16,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
               child: CircleAvatar(
-                radius: 52,
-                backgroundColor: const Color(0xFFEAF2FC),
+                radius: 53,
+                backgroundColor: _softLavender,
                 backgroundImage: fotoSementara != null
                     ? MemoryImage(fotoSementara!)
                     : null,
                 child: fotoSementara == null
                     ? const Icon(
                         Icons.person_rounded,
-                        size: 56,
-                        color: _biru,
+                        size: 57,
+                        color: _plum,
                       )
                     : null,
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
 
             TextButton.icon(
               onPressed: sedangMemilihFoto ? null : _pilihFoto,
@@ -715,7 +755,7 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                       height: 17,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: _biru,
+                        color: _plum,
                       ),
                     )
                   : const Icon(
@@ -728,35 +768,44 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                     : 'Ubah Foto Profil',
               ),
               style: TextButton.styleFrom(
-                foregroundColor: _biru,
+                foregroundColor: _plum,
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
               ),
             ),
 
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
 
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFEAF2FC),
-                borderRadius: BorderRadius.circular(13),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFFF0EBF7),
+                    Color(0xFFFFF0F5),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(15),
                 border: Border.all(
-                  color: const Color(0xFFD8E7F8),
+                  color: const Color(0xFFEAE1F0),
                 ),
               ),
               child: const Row(
                 children: [
                   Icon(
                     Icons.edit_note_rounded,
-                    color: _biru,
-                    size: 22,
+                    color: _plum,
+                    size: 24,
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 11),
                   Expanded(
                     child: Text(
                       'Perbarui informasi pribadimu melalui formulir berikut.',
                       style: TextStyle(
-                        color: _biruTua,
+                        color: _darkPlum,
                         fontSize: 12,
                         height: 1.5,
                       ),
@@ -766,50 +815,54 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
               ),
             ),
 
-            const SizedBox(height: 22),
+            const SizedBox(height: 23),
 
+            _buildFormLabel('Nama Lengkap'),
             TextField(
               controller: namaController,
               textCapitalization: TextCapitalization.words,
               decoration: _inputDecoration(
-                'Nama Lengkap',
+                'Masukkan nama lengkap',
                 Icons.person_outline,
               ),
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: 16),
 
+            _buildFormLabel('NPM'),
             TextField(
               controller: npmController,
               keyboardType: TextInputType.number,
               decoration: _inputDecoration(
-                'NPM',
+                'Masukkan NPM',
                 Icons.badge_outlined,
               ),
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: 16),
 
+            _buildFormLabel('Program Studi'),
             TextField(
               controller: prodiController,
               decoration: _inputDecoration(
-                'Program Studi',
+                'Masukkan program studi',
                 Icons.school_outlined,
               ),
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: 16),
 
+            _buildFormLabel('Semester'),
             DropdownButtonFormField<String>(
               initialValue: _semesterOptions.contains(semester)
                   ? semester
                   : 'Semester 5',
               decoration: _inputDecoration(
-                'Semester',
+                'Pilih semester',
                 Icons.menu_book_outlined,
               ),
               dropdownColor: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               items: _semesterOptions
                   .map(
                     (item) => DropdownMenuItem<String>(
@@ -817,7 +870,7 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                       child: Text(
                         item,
                         style: const TextStyle(
-                          color: _biruTua,
+                          color: _darkPlum,
                           fontSize: 14,
                         ),
                       ),
@@ -831,22 +884,23 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
               },
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: 16),
 
+            _buildFormLabel('Email'),
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: _inputDecoration(
-                'Email',
+                'Masukkan alamat email',
                 Icons.email_outlined,
               ),
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 27),
 
             SizedBox(
               width: double.infinity,
-              height: 50,
+              height: 52,
               child: ElevatedButton.icon(
                 onPressed:
                     sedangMemilihFoto ? null : _simpanPerubahan,
@@ -858,44 +912,61 @@ class _EditDataDiriScreenState extends State<EditDataDiriScreen> {
                   'Simpan Perubahan',
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _biru,
+                  backgroundColor: _plum,
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                 ),
               ),
             ),
 
-            const SizedBox(height: 11),
+            const SizedBox(height: 12),
 
             SizedBox(
               width: double.infinity,
-              height: 48,
+              height: 49,
               child: OutlinedButton(
                 onPressed: () => Navigator.pop(context),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: _biruTua,
+                  foregroundColor: _darkPlum,
                   side: const BorderSide(color: _line),
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                 ),
                 child: const Text(
                   'Batal',
                   style: TextStyle(
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFormLabel(String label) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          label,
+          style: const TextStyle(
+            color: _darkPlum,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

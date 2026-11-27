@@ -1,9 +1,18 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'package:sqflite/sqflite.dart';
+
 import 'screen/splash_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  }
+
   runApp(const StudyMateApp());
 }
 
@@ -19,23 +28,15 @@ class StudyMateApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'StudyMate',
-
       theme: ThemeData(
         useMaterial3: true,
-
-        // Font utama aplikasi
         fontFamily: 'Roboto',
-
-        // Warna dasar aplikasi
         colorScheme: ColorScheme.fromSeed(
           seedColor: biruUtama,
           brightness: Brightness.light,
           surface: Colors.white,
         ),
-
         scaffoldBackgroundColor: latar,
-
-        // Pengaturan AppBar
         appBarTheme: const AppBarTheme(
           backgroundColor: latar,
           foregroundColor: teksUtama,
@@ -49,8 +50,6 @@ class StudyMateApp extends StatelessWidget {
             color: teksUtama,
           ),
         ),
-
-        // Pengaturan teks
         textTheme: const TextTheme(
           headlineSmall: TextStyle(
             fontSize: 22,
@@ -82,8 +81,6 @@ class StudyMateApp extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-
-        // Pengaturan tombol
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: biruUtama,
@@ -102,7 +99,6 @@ class StudyMateApp extends StatelessWidget {
             ),
           ),
         ),
-
         filledButtonTheme: FilledButtonThemeData(
           style: FilledButton.styleFrom(
             backgroundColor: biruUtama,
@@ -117,8 +113,6 @@ class StudyMateApp extends StatelessWidget {
             ),
           ),
         ),
-
-        // Pengaturan kolom input
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
@@ -156,8 +150,6 @@ class StudyMateApp extends StatelessWidget {
             ),
           ),
         ),
-
-        // Pengaturan kartu
         cardTheme: CardThemeData(
           color: Colors.white,
           elevation: 0,
@@ -169,8 +161,6 @@ class StudyMateApp extends StatelessWidget {
             ),
           ),
         ),
-
-        // Pengaturan dialog
         dialogTheme: DialogThemeData(
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.transparent,
@@ -188,14 +178,11 @@ class StudyMateApp extends StatelessWidget {
             height: 1.5,
           ),
         ),
-
-        // Pengaturan ikon
         iconTheme: const IconThemeData(
           color: teksUtama,
           size: 22,
         ),
       ),
-
       home: const SplashScreen(),
     );
   }
